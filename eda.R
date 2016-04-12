@@ -80,6 +80,12 @@ t.test(formula=felonies~is_weekend, data=reg_dataset, var.equal=TRUE, conf.level
 reg_dataset$is_weekend <- NULL
 
 # day_of_week
+# reorder levels
+day_of_week_dict <- data.frame(day_of_week=c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
+                               day_of_week_ndx=c(1, 2, 3, 4, 5, 6, 7))
+reg_dataset <- left_join(reg_dataset, day_of_week_dict, by="day_of_week") %>%
+  mutate(day_of_week=factor(day_of_week_ndx),
+         day_of_week_ndx=NULL)
 ggplot(reg_dataset, aes(x=day_of_week, y=felonies)) + geom_boxplot()
 ggsave(filename="eda_plots/felonies_vs_dayOfWeek.png", width=6.125, height=3.5, units="in")
 anova(lm(felonies~day_of_week, data=reg_dataset)) # use a one way ANOVA F-test
