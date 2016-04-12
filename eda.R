@@ -26,7 +26,7 @@ dev.off()
 rm(plot.pairs)
 
 # first notice the recording error in the windspeed_avg_mph variable
-# -2236.716306 mph on Nov 28 and 29
+# -2236.716306 mph on Nov 28 and 29 (-9999 is "missing" http://www1.ncdc.noaa.gov/pub/data/ghcn/daily/readme.txt)
 # remove those observations for now
 # if we end up removing the windspeed_avg_mph variable later, we can add those obs back in
 reg_dataset <- reg_dataset %>%
@@ -107,4 +107,11 @@ ggsave(filename="eda_plots/felonies_vs_maxTemp.png", width=6.125, height=3.5, un
 
 write.csv(reg_dataset, file = "datasets/reg_dataset.csv", row.names = FALSE)
 save(reg_dataset, file="datasets/reg_dataset_R_obj")
+
+
+
+# some questions of interest
+# are the number of felonies associated with temp? (either min or max temp)
+# is felonies associated with presence of precipitation?
+# does the association between precip and felonies depend on temperature?
 
