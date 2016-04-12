@@ -48,6 +48,12 @@ rm(plot.pairs)
 # temp_min_degF and temp_max_degF
 # accidents and accident_injuriesDeaths
 
+# restated: accidents and accident_injuriesDeaths are highly correlated
+# also not clear if a traffic accidents with injuriesDeaths can contribute to the 
+# felonies count (namely the grand larceny of motor vehicle, and murder and non-negligent manslaughter types)
+# removing accident_injuriesDeaths from the dataset to help reduce the number of covariates
+reg_dataset$accident_injuriesDeaths <- NULL
+
 # school_atttendance_pct is either 0, or between 74.63 and 93.91
 # not enough data between 0 and 74.63 for inference
 # use the is_school_day indicator variable instead
@@ -70,7 +76,8 @@ ggplot(reg_dataset, aes(x=is_weekend, y=felonies)) + geom_boxplot()
 ggsave(filename="eda_plots/felonies_vs_isWeekend.png", width=6.125, height=3.5, units="in")
 t.test(formula=felonies~is_weekend, data=reg_dataset, var.equal=TRUE, conf.level=0.95)
 # no obvious difference on weekday vs weekend
-# but keep in model for now
+# remove from model, in favor of day_of_week (below)
+reg_dataset$is_weekend <- NULL
 
 # day_of_week
 ggplot(reg_dataset, aes(x=day_of_week, y=felonies)) + geom_boxplot()
@@ -114,4 +121,12 @@ save(reg_dataset, file="datasets/reg_dataset_R_obj")
 # are the number of felonies associated with temp? (either min or max temp)
 # is felonies associated with presence of precipitation?
 # does the association between precip and felonies depend on temperature?
+# is felonies associated with windspeed?
+# does the association between windspeed and felonies depend on temperature?
+# after taking temp into account, is felonies associated with accidents?
+# is felonies associated with holidays?
+# is felonies associated with school days?
+# is felonies associated with day of week?
+
+
 
