@@ -34,9 +34,11 @@ dev.off()
 rm(plot.pairs)
 
 # many of the numeric covariates are highly correlated
-# temp_min_degF and temp_max_degF
-# accidents and accident_injuriesDeaths
 
+# temp_min_degF and temp_max_degF
+
+
+# accidents and accident_injuriesDeaths
 # restated: accidents and accident_injuriesDeaths are highly correlated
 # also not clear if a traffic accidents with injuriesDeaths can contribute to the 
 # felonies count (namely the grand larceny of motor vehicle, and murder and non-negligent manslaughter types)
