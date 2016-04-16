@@ -80,102 +80,101 @@ PlotCIStats <- function(model, x_var, label_leverage=TRUE, label_studRes=TRUE, l
 
 reg_dataset_diff <- bind_rows(data.frame(date=as.Date("2014-12-31"),
                                          felonies=as.integer(256),
-                                         temp_min_degF=as.numeric(27.14)), # same temp as on Jan 1 2015
+                                         temp_min_degF=as.numeric(27.14), # same temp as on Jan 1 2015
+                                         any_precip=factor(0, levels=c(0, 1)),
+                                         is_holiday=factor(0, levels=c(0,1))),
                               reg_dataset_flagged) %>%
   arrange(date) %>%
   mutate(felonies_diff=felonies - lag(felonies, 1),
-         temp_min_degF_diff=temp_min_degF - lag(temp_min_degF, 1)) %>%
+         temp_min_degF_diff=temp_min_degF - lag(temp_min_degF, 1),
+         any_precip_diff=factor(as.numeric(as.character(any_precip)) - lag(as.numeric(as.character(any_precip)), 1)),
+         is_holiday_diff=factor(as.numeric(as.character(is_holiday)) - lag(as.numeric(as.character(is_holiday)), 1))) %>%
   filter(date >= "2015-01-01" & date <= "2015-12-31") %>%
-  mutate(temp_min_degF_diff_group=factor(ifelse(temp_min_degF_diff < -5,
-                                                "(-Inf, -5)",
-                                                ifelse(temp_min_degF_diff >= -5 & temp_min_degF_diff <= 5,
-                                                       "[-5, 5]",
-                                                       "(5, Inf)")), levels = c("(-Inf, -5)", "[-5, 5]", "(5, Inf)")),
-         temp_jump=factor(ifelse(temp_min_degF_diff > 8, 1, 0)))
+  mutate(temp_jump=factor(ifelse(temp_min_degF_diff > 8, 1, 0)))
 
 
 
-# Is a change in felonies associated with change in temp? ############################################################
+# Is an increase in temp associated with an increase in felonies? ############################################################
 
 summary(reg_dataset_diff)
 
-
-# with 3 groups
-
-ggplot(reg_dataset_diff, aes(x=temp_min_degF_diff_group, y=felonies_diff)) +
-  geom_boxplot()
-
-anova(lm(formula = felonies_diff ~ temp_min_degF_diff_group, data = reg_dataset_diff))
-
-anova(lm(formula = felonies_diff ~ temp_min_degF_diff_group, data = reg_dataset_diff,
-         subset = (
-           (temp_min_degF_diff_group == "(-Inf, -5)") |
-             (temp_min_degF_diff_group == "[-5, -5]" & abs(felonies_diff) < 100) |
-             (temp_min_degF_diff_group == "(5, Inf)" & abs(felonies_diff) < 75)
-         ) ))
-
-
-# with 2 groups
-
-ggplot(reg_dataset_diff, aes(x=temp_jump, y=felonies_diff)) +
-  geom_boxplot()
-
-ggplot(reg_dataset_diff, aes(fill=temp_jump, x=felonies_diff)) +
-  geom_density(alpha=0.5)
-
-anova(lm(formula = felonies_diff ~ temp_jump, data = reg_dataset_diff))
-
-anova(lm(formula = felonies_diff ~ temp_jump, data = reg_dataset_diff,
-         subset = (
-           (temp_jump == 0 & felonies_diff >= -75 & felonies_diff <= 75) |
-             (temp_jump == 1 & abs(felonies_diff) <= 75)
-         ) ))
-
-t.test(formula=felonies_diff ~ temp_jump, data=reg_dataset_diff, var.equal=TRUE, conf.level=0.95)
-
 # try paired t-test
-# (felonies today - yesterday on jump days)
-t.test(x=filter(reg_dataset_diff, temp_jump==1)$felonies_diff,
-       conf.level=0.95, alternative="greater")
+# (felonies today - yesterday) on jump days
+ggplot(filter(reg_dataset_diff, temp_jump==1), aes(y=felonies_diff, x=temp_jump)) +
+  geom_boxplot()
+tt1 <- t.test(x=filter(reg_dataset_diff, temp_jump==1)$felonies_diff,
+              conf.level=0.95, alternative="two.sided")
+tt1$p.value / 2
+tt1$conf.int
+
+# how does this compare to non-jump days?
+ggplot(reg_dataset_diff, aes(y=felonies_diff, x=temp_jump)) +
+  geom_boxplot()
+tt2 <- t.test(formula=felonies_diff~temp_jump, data=reg_dataset_diff, var.equal=TRUE, conf.level=0.95)
+tt2$p.value / 2
+tt3 <- t.test(formula=felonies_diff~temp_jump, data=reg_dataset_diff, var.equal=TRUE, conf.level=0.95,
+              subset = (temp_jump == 0 & abs(felonies_diff) <= 75) | (temp_jump == 1))
+tt3$p.value / 2
 
 
+# Is an increase in temp associated with an increase in felonies? ############################################################
 
-
-
-
-
-ggplot(reg_dataset_diff, aes(x=temp_min_degF_diff, y=felonies_diff)) +
-  geom_point(aes(color=factor(sign(temp_min_degF_diff)))) +
-  geom_smooth()
-
-lmd1 <- lm(formula = felonies_diff ~ temp_min_degF_diff, data = reg_dataset_diff)
+lmd1 <- lm(formula = felonies_diff ~ temp_jump, data = reg_dataset_diff)
 summary(lmd1)
 
-PlotCIStats(model = lmd1, x_var = reg_dataset_diff$date)
 
-lmd2 <- lm(formula = felonies_diff ~ temp_min_degF_diff, data = reg_dataset_diff,
-           subset = abs(studres(lmd1)) < 2 & cooks.distance(lmd1) < 1)
+lmd2 <- lm(formula =
+             felonies_diff ~
+             temp_jump + temp_min_degF + temp_jump*temp_min_degF +
+             any_precip + is_holiday + is_school_day +day_of_week,
+           data = as.data.frame(reg_dataset_diff))
 summary(lmd2)
 
+# check the residuals
+temp_plot_data <- reg_dataset_diff %>%
+  mutate(fitted=eval(lmd2$fitted.values),
+         resid=eval(lmd2$residuals),
+         is_resid_outlier=IsOutlier(eval(lmd2$residuals)))
+ggplot(temp_plot_data,
+       aes(x=fitted, y=resid)) +
+  geom_point() +
+  geom_hline(yintercept=0, linetype="dashed") +
+  labs(x="Fitted Values", y="Residuals") +
+  geom_text_repel(data = filter(temp_plot_data, is_resid_outlier==TRUE), aes(label=format(date, format="%b %d")), size=3.5)
+ggsave(filename="model_felonies_diff_plots/lmd2_residuals.png", width=6.125, height=3.5, units="in")
 
+# check for serial correlation
+ggplot(temp_plot_data,
+       aes(x=date, y=resid)) +
+  geom_point() +
+  geom_hline(yintercept=0, linetype="dashed") +
+  labs(x="Date", y="Residuals") +
+  geom_text_repel(data = filter(temp_plot_data, is_resid_outlier==TRUE), aes(label=format(date, format="%b %d")), size=3.5)
+ggsave(filename="model_felonies_diff_plots/lmd2_serial.png", width=6.125, height=3.5, units="in")
+rm(temp_plot_data)
 
-lmd3 <- lm(formula = felonies_diff ~ temp_min_degF_diff_group, data = reg_dataset_diff)
+# plot the case influence statistics
+lmd2_cistat_plot <- PlotCIStats(model = lmd2, x_var = reg_dataset_diff$date, label_leverage = T)
+ggsave(filename="model_felonies_diff_plots/lmd2_caseInfluenceStats.png",
+       plot = lmd2_cistat_plot, width=10, height=6, units="in")
+
+# Excl days with problematic studRes or cooksDist
+lmd3 <- lm(formula =
+             felonies_diff ~
+             temp_jump + temp_min_degF + temp_jump*temp_min_degF +
+             any_precip + is_holiday + is_school_day +day_of_week,
+           data = as.data.frame(reg_dataset_diff),
+           subset = abs(studres(lmd2)) < 2 & cooks.distance(lmd2) < 1)
 summary(lmd3)
 
-PlotCIStats(model = lmd3, x_var = reg_dataset_diff$date)
-
-lmd4 <- lm(formula = felonies_diff ~ temp_min_degF_diff_group, data = reg_dataset_diff,
-           subset = abs(studres(lmd3)) < 2 & cooks.distance(lmd3) < 1)
-summary(lmd4)
 
 
-lmd5 <- lm(formula = felonies_diff ~ temp_jump, data = reg_dataset_diff)
-summary(lmd5)
 
-PlotCIStats(model = lmd3, x_var = reg_dataset_diff$date)
 
-lmd6 <- lm(formula = felonies_diff ~ temp_jump, data = reg_dataset_diff,
-           subset = abs(studres(lmd3)) < 2 & cooks.distance(lmd3) < 1)
-summary(lmd6)
+
+
+
+
+
 
 
