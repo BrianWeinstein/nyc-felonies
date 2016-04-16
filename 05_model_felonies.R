@@ -222,7 +222,7 @@ summary(lm5)
 # what was removed?
 filter(reg_dataset, abs(studres(lm4)) >= 2 | cooks.distance(lm4) >= 1)  %>% summary()
 
-# (can't do a partial residual plot, since the variable in question is a 2-level factor)
+# plot felonies vs temp, color=problemDayType
 temp_plot_data <- reg_dataset %>%
   mutate(problematicObs=as.numeric(abs(studres(lm4)) >= 2 | cooks.distance(lm4) >= 1)) %>%
   select(date, problematicObs, is_holiday, is_school_day, temp_min_degF, felonies) %>%
@@ -240,7 +240,36 @@ ggplot(temp_plot_data, aes(x=temp_min_degF, y=felonies)) +
                   aes(label=format(date, format="%b %d"), color=problemDayType), size=3.5, #fontface="bold",
                   show.legend = FALSE) +
   labs(x="Minimum Temperature (degrees F)", y="Felonies", color="")
-ggsave(filename="model_felonies_plots/lm5_felonies_vs_temp_problematicObs.png", width=6.125, height=3.5, units="in")
+ggsave(filename="model_felonies_plots/lm4_felonies_vs_temp_problematicObs.png", width=6.125, height=3.5, units="in")
+rm(temp_plot_data)
+
+
+
+# plot partial residual plots for is_holiday and is_school_day
+temp_plot_data <- reg_dataset %>%
+  mutate(problematicObs=as.numeric(abs(studres(lm4)) >= 2 | cooks.distance(lm4) >= 1)) %>%
+  select(date, problematicObs, is_holiday, is_school_day, temp_min_degF, felonies) %>%
+  mutate(dayType=ifelse(is_school_day==1 & is_holiday==1,
+                        "Other",
+                        ifelse(is_school_day==1,
+                               "School Day",
+                               ifelse(is_holiday==1,
+                                      "Holiday",
+                                      "Other"))),
+         problemDayType=ifelse(problematicObs==TRUE, dayType, NA),
+         lm4resid=eval(lm4$residuals),
+         preslm4_is_holiday=lm4resid+(as.numeric(as.character(is_holiday))*lm4$coefficients["is_holiday1"][[1]]),
+         preslm4_is_school_day=lm4resid+(as.numeric(as.character(is_school_day))*lm4$coefficients["is_school_day1"][[1]]))
+set.seed(1)
+ggplot(temp_plot_data, aes(x=is_holiday, y=preslm4_is_holiday)) +
+  geom_jitter(size=0.7, width = 0.5, aes(color=factor(problematicObs))) +
+  labs(x="Non-holiday (0) vs Holiday (1)\n[jittered]", y="Partial Residual\n(felonies, adjusted for all covariates)", color="Promblematic\n Observation")
+ggsave(filename="model_felonies_plots/lm4_pres_isHoliday.png", width=6.125, height=3.5, units="in")
+set.seed(1)
+ggplot(temp_plot_data, aes(x=is_school_day, y=preslm4_is_school_day)) +
+  geom_jitter(size=0.7, width = 0.5, aes(color=factor(problematicObs))) +
+  labs(x="Non-School Day (0) vs School Day (1)\n[jittered]", y="Partial Residual\n(felonies, adjusted for all covariates)", color="Promblematic\n Observation")
+ggsave(filename="model_felonies_plots/lm4_pres_isSchoolDay.png", width=6.125, height=3.5, units="in")
 rm(temp_plot_data)
 
 
