@@ -217,7 +217,7 @@ lm5 <- lm(formula =
           subset = abs(studres(lm4)) < 2 & cooks.distance(lm4) < 1)
 summary(lm5)
 
-# is_holiday and is_school_dat are now significant
+# is_holiday and is_school_day are now significant
 
 # what was removed?
 filter(reg_dataset, abs(studres(lm4)) >= 2 | cooks.distance(lm4) >= 1)  %>% summary()
@@ -273,5 +273,37 @@ ggsave(filename="model_felonies_plots/lm4_pres_isSchoolDay.png", width=6.125, he
 rm(temp_plot_data)
 
 
+# Is there an association between felonies and temp after accounting for everything else? Remove temp*precip  ############################################################
+
+# Remove interaction between precip and temp
+lm6 <- lm(formula =
+            felonies ~ temp_min_degF + any_precip +
+            is_holiday + is_school_day + day_of_week,
+          data=reg_dataset)
+summary(lm6)
+
+# use extra sum of squares F test to see if day_of_week is significant
+anova(lm6, lm(formula = felonies ~ temp_min_degF + any_precip + is_holiday + is_school_day, data=reg_dataset))
+
+# Excl days with problematic studRes or cooksDist
+lm7 <- lm(formula =
+            felonies ~ temp_min_degF + any_precip +
+            is_holiday + is_school_day + day_of_week,
+          data=reg_dataset,
+          subset = abs(studres(lm6)) < 2 & cooks.distance(lm6) < 1)
+summary(lm7)
+
+# list of the problematic observations
+reg_dataset %>% filter(abs(studres(lm6)) >= 2 | cooks.distance(lm6) >= 1)
+
+
+
+# Save image and objects  ############################################################
 
 save.image("05_model_felonies.RData")
+
+reg_dataset_flagged <- reg_dataset %>%
+  mutate(problematic_obs=factor(ifelse(abs(studres(lm6)) >= 2 | cooks.distance(lm6) >= 1, 1, 0))) %>%
+  select(date, felonies, temp_min_degF, any_precip, is_holiday, is_school_day, day_of_week, problematic_obs)
+save(reg_dataset_flagged, file = "datasets/reg_dataset_flagged_R_obj")
+
