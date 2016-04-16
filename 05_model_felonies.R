@@ -244,3 +244,5 @@ ggsave(filename="model_felonies_plots/lm5_felonies_vs_temp_problematicObs.png", 
 rm(temp_plot_data)
 
 
+
+save.image("05_model_felonies.RData")
