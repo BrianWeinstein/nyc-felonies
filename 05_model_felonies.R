@@ -15,7 +15,7 @@ setwd("~/Documents/nyc-felonies")
 load(file="datasets/reg_dataset_R_obj")
 
 
-# Define helper function ############################################################
+# Define helper functions ############################################################
 
 # define an outlier checker
 # http://stackoverflow.com/questions/33524669/labeling-outliers-of-boxplots-in-r
