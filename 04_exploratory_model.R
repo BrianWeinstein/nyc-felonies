@@ -49,7 +49,7 @@ ggplot(temp_plot_data,
   geom_hline(yintercept=0, linetype="dashed") +
   labs(x="Fitted values", y="Residuals") +
   geom_text_repel(data = filter(temp_plot_data, resid > 75), aes(label=format(date, format="%b %d")), size=3.5)
-ggsave(filename="model_plots/mod1_residuals.png", width=6.125, height=3.5, units="in")
+ggsave(filename="exploratory_model_plots/mod1_residuals.png", width=6.125, height=3.5, units="in")
 rm(temp_plot_data)
 
 
@@ -83,7 +83,7 @@ ggplot(temp_plot_data,
   geom_hline(yintercept=0, linetype="dashed") +
   labs(x="Fitted values", y="Residuals") +
   geom_text_repel(data = filter(temp_plot_data, resid > 75), aes(label=format(date, format="%b %d")), size=3.5)
-ggsave(filename="model_plots/mod2_residuals.png", width=6.125, height=3.5, units="in")
+ggsave(filename="exploratory_model_plots/mod2_residuals.png", width=6.125, height=3.5, units="in")
 rm(temp_plot_data)
 
 
@@ -118,7 +118,7 @@ plot_cooksDist <- ggplot(temp_plot_data, aes(x=date, y=cooksDist)) +
   labs(x="Observation (date)", y="Cook's Distance") +
   ylim(0 ,1)
 plot_allCI <- grid.arrange(plot_leverage, plot_studRes, plot_cooksDist, nrow=3, ncol=1)
-ggsave(filename="model_plots/mod2_caseInfluenceStats.png", plot=plot_allCI, width=10, height=6, units="in")
+ggsave(filename="exploratory_model_plots/mod2_caseInfluenceStats.png", plot=plot_allCI, width=10, height=6, units="in")
 rm(temp_mod, temp_plot_data, plot_leverage, plot_studRes, plot_cooksDist, plot_allCI)
 
 
@@ -171,7 +171,7 @@ ggplot(temp_plot_data,
   geom_hline(yintercept=0, linetype="dashed") +
   labs(x="Fitted values", y="Residuals") +
   geom_text_repel(data = filter(temp_plot_data, resid > 75), aes(label=format(date, format="%b %d")), size=3.5)
-ggsave(filename="model_plots/mod4_residuals.png", width=6.125, height=3.5, units="in")
+ggsave(filename="exploratory_model_plots/mod4_residuals.png", width=6.125, height=3.5, units="in")
 rm(temp_plot_data)
 
 # plot case influence statistics
@@ -205,7 +205,7 @@ plot_cooksDist <- ggplot(temp_plot_data, aes(x=date, y=cooksDist)) +
   labs(x="Observation (date)", y="Cook's Distance") +
   ylim(0 ,1)
 plot_allCI <- grid.arrange(plot_leverage, plot_studRes, plot_cooksDist, nrow=3, ncol=1)
-ggsave(filename="model_plots/mod4_caseInfluenceStats.png", plot=plot_allCI, width=10, height=6, units="in")
+ggsave(filename="exploratory_model_plots/mod4_caseInfluenceStats.png", plot=plot_allCI, width=10, height=6, units="in")
 rm(temp_mod, temp_plot_data, plot_leverage, plot_studRes, plot_cooksDist, plot_allCI)
 
 
