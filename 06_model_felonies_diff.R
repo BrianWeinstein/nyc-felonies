@@ -76,9 +76,7 @@ PlotCIStats <- function(model, x_var, label_leverage=TRUE, label_studRes=TRUE, l
 
 
 
-
-
-# Define felonies_diff and temp_diff ############################################################
+# Define felonies_diff and temp_min_degF_diff ############################################################
 
 reg_dataset_diff <- bind_rows(data.frame(date=as.Date("2014-12-31"),
                                          felonies=as.integer(256),
@@ -92,7 +90,8 @@ reg_dataset_diff <- bind_rows(data.frame(date=as.Date("2014-12-31"),
                                                 "(-Inf, -5)",
                                                 ifelse(temp_min_degF_diff >= -5 & temp_min_degF_diff <= 5,
                                                        "[-5, 5]",
-                                                       "(5, Inf)")), levels = c("(-Inf, -5)", "[-5, 5]", "(5, Inf)")))
+                                                       "(5, Inf)")), levels = c("(-Inf, -5)", "[-5, 5]", "(5, Inf)")),
+         temp_jump=factor(ifelse(temp_min_degF_diff > 8, 1, 0)))
 
 
 
@@ -100,16 +99,47 @@ reg_dataset_diff <- bind_rows(data.frame(date=as.Date("2014-12-31"),
 
 summary(reg_dataset_diff)
 
+
+# with 3 groups
+
 ggplot(reg_dataset_diff, aes(x=temp_min_degF_diff_group, y=felonies_diff)) +
   geom_boxplot()
 
 anova(lm(formula = felonies_diff ~ temp_min_degF_diff_group, data = reg_dataset_diff))
 
 anova(lm(formula = felonies_diff ~ temp_min_degF_diff_group, data = reg_dataset_diff,
-         subset = ((temp_min_degF_diff_group == "(-Inf, -5)") |
-                     (temp_min_degF_diff_group == "[-5, -5]" & abs(felonies_diff) < 100) |
-                     (temp_min_degF_diff_group == "(5, Inf)" & abs(felonies_diff) < 75)
+         subset = (
+           (temp_min_degF_diff_group == "(-Inf, -5)") |
+             (temp_min_degF_diff_group == "[-5, -5]" & abs(felonies_diff) < 100) |
+             (temp_min_degF_diff_group == "(5, Inf)" & abs(felonies_diff) < 75)
          ) ))
+
+
+# with 2 groups
+
+ggplot(reg_dataset_diff, aes(x=temp_jump, y=felonies_diff)) +
+  geom_boxplot()
+
+ggplot(reg_dataset_diff, aes(fill=temp_jump, x=felonies_diff)) +
+  geom_density(alpha=0.5)
+
+anova(lm(formula = felonies_diff ~ temp_jump, data = reg_dataset_diff))
+
+anova(lm(formula = felonies_diff ~ temp_jump, data = reg_dataset_diff,
+         subset = (
+           (temp_jump == 0 & felonies_diff >= -75 & felonies_diff <= 75) |
+             (temp_jump == 1 & abs(felonies_diff) <= 75)
+         ) ))
+
+t.test(formula=felonies_diff ~ temp_jump, data=reg_dataset_diff, var.equal=TRUE, conf.level=0.95)
+
+# try paired t-test
+# (felonies today - yesterday on jump days)
+t.test(x=filter(reg_dataset_diff, temp_jump==1)$felonies_diff,
+       conf.level=0.95, alternative="greater")
+
+
+
 
 
 
@@ -117,9 +147,6 @@ anova(lm(formula = felonies_diff ~ temp_min_degF_diff_group, data = reg_dataset_
 ggplot(reg_dataset_diff, aes(x=temp_min_degF_diff, y=felonies_diff)) +
   geom_point(aes(color=factor(sign(temp_min_degF_diff)))) +
   geom_smooth()
-
-
-
 
 lmd1 <- lm(formula = felonies_diff ~ temp_min_degF_diff, data = reg_dataset_diff)
 summary(lmd1)
@@ -132,8 +159,6 @@ summary(lmd2)
 
 
 
-
-
 lmd3 <- lm(formula = felonies_diff ~ temp_min_degF_diff_group, data = reg_dataset_diff)
 summary(lmd3)
 
@@ -142,4 +167,15 @@ PlotCIStats(model = lmd3, x_var = reg_dataset_diff$date)
 lmd4 <- lm(formula = felonies_diff ~ temp_min_degF_diff_group, data = reg_dataset_diff,
            subset = abs(studres(lmd3)) < 2 & cooks.distance(lmd3) < 1)
 summary(lmd4)
+
+
+lmd5 <- lm(formula = felonies_diff ~ temp_jump, data = reg_dataset_diff)
+summary(lmd5)
+
+PlotCIStats(model = lmd3, x_var = reg_dataset_diff$date)
+
+lmd6 <- lm(formula = felonies_diff ~ temp_jump, data = reg_dataset_diff,
+           subset = abs(studres(lmd3)) < 2 & cooks.distance(lmd3) < 1)
+summary(lmd6)
+
 
