@@ -14,6 +14,9 @@ setwd("~/Documents/nyc-felonies")
 # load the reg_dataset dataframe
 load(file="datasets/reg_dataset_R_obj")
 
+# prevent R from printing in scientific notation
+options(scipen=5)
+
 
 # Define helper functions ############################################################
 
@@ -74,6 +77,12 @@ PlotCIStats <- function(model, x_var, label_leverage=TRUE, label_studRes=TRUE, l
   
 }
 
+# Plot the distribution of felonies ############################################################
+
+ggplot(reg_dataset, aes(x=felonies)) +
+  geom_histogram(bins=30) +
+  labs(x="Felonies/Day", y="Count of Days")
+ggsave(filename="model_felonies_plots/felonies_hist.png", width=4, height=3.5, units="in")
 
 
 # Are the number of felonies different on warmer days than cooler days? ############################################################
@@ -86,7 +95,9 @@ reg_dataset <- reg_dataset %>%
 ggplot(reg_dataset, aes(x=date, y=1, fill=is_warm)) +
   geom_bar(stat="identity", width = 1) +
   labs(y=NULL, x="Date") +
-  theme(axis.text.y=element_blank())
+  theme(axis.text.y=element_blank()) +
+  scale_fill_manual(values=c("#00BFC4", "#F8766D"))
+ggsave(filename="model_felonies_plots/isWarm.png", width=10, height=1.3, units="in")
 ggplot(reg_dataset, aes(x=date, y=as.numeric(as.character(is_warm)))) +
   geom_line() +
   geom_point(aes(color=is_warm)) +
@@ -126,8 +137,17 @@ ggplot(reg_dataset, aes(x=temp_min_degF, y=felonies)) +
   labs(x="Minimum Temperature (degrees F)", y="Felonies")
 ggsave(filename="model_felonies_plots/felonies_vs_minTemp.png", width=6.125, height=3.5, units="in")
 
+# plot with color corresponding to is_warm
+ggplot(reg_dataset, aes(x=temp_min_degF, y=felonies)) +
+  geom_point(aes(color=is_warm), show.legend = FALSE) +
+  labs(x="Minimum Temperature (degrees F)", y="Felonies") +
+  scale_color_manual(values=c("#00BFC4", "#F8766D"))
+ggsave(filename="model_felonies_plots/felonies_vs_minTemp_color.png", width=6.125, height=3.5, units="in")
+
+
 lm1 <- lm(formula = felonies ~ temp_min_degF, data=reg_dataset)
 summary(lm1)
+confint(lm1)
 
 # check the residuals
 temp_plot_data <- reg_dataset %>%
@@ -221,11 +241,12 @@ summary(lm5)
 
 # what was removed?
 filter(reg_dataset, abs(studres(lm4)) >= 2 | cooks.distance(lm4) >= 1)  %>% summary()
+filter(reg_dataset, abs(studres(lm4)) >= 2 | cooks.distance(lm4) >= 1) %>% select(date, felonies, day_of_week, temp_min_degF, is_holiday, is_school_day)
 
 # plot felonies vs temp, color=problemDayType
 temp_plot_data <- reg_dataset %>%
   mutate(problematicObs=as.numeric(abs(studres(lm4)) >= 2 | cooks.distance(lm4) >= 1)) %>%
-  select(date, problematicObs, is_holiday, is_school_day, temp_min_degF, felonies) %>%
+  select(date, problematicObs, is_holiday, is_school_day, temp_min_degF, felonies, any_precip) %>%
   mutate(dayType=ifelse(is_school_day==1 & is_holiday==1,
                         "Other",
                         ifelse(is_school_day==1,
@@ -263,7 +284,7 @@ temp_plot_data <- reg_dataset %>%
 set.seed(1)
 ggplot(temp_plot_data, aes(x=is_holiday, y=preslm4_is_holiday)) +
   geom_jitter(size=0.7, width = 0.5, aes(color=factor(problematicObs))) +
-  labs(x="Non-holiday (0) vs Holiday (1)\n[jittered]", y="Partial Residual\n(felonies, adjusted for all covariates)", color="Promblematic\n Observation")
+  labs(x="Non-Holiday (0) vs Holiday (1)\n[jittered]", y="Partial Residual\n(felonies, adjusted for all covariates)", color="Promblematic\n Observation")
 ggsave(filename="model_felonies_plots/lm4_pres_isHoliday.png", width=6.125, height=3.5, units="in")
 set.seed(1)
 ggplot(temp_plot_data, aes(x=is_school_day, y=preslm4_is_school_day)) +
@@ -293,8 +314,11 @@ lm7 <- lm(formula =
           subset = abs(studres(lm6)) < 2 & cooks.distance(lm6) < 1)
 summary(lm7)
 
+# use extra sum of squares F test to see if day_of_week is significant
+anova(lm7, lm(formula = felonies ~ temp_min_degF + any_precip + is_holiday + is_school_day, data=reg_dataset, subset = abs(studres(lm6)) < 2 & cooks.distance(lm6) < 1))
+
 # list of the problematic observations
-reg_dataset %>% filter(abs(studres(lm6)) >= 2 | cooks.distance(lm6) >= 1)
+filter(reg_dataset, abs(studres(lm6)) >= 2 | cooks.distance(lm6) >= 1) %>% select(date, felonies, day_of_week, temp_min_degF, any_precip, is_holiday, is_school_day)
 
 
 
@@ -306,4 +330,11 @@ reg_dataset_flagged <- reg_dataset %>%
   mutate(problematic_obs=factor(ifelse(abs(studres(lm6)) >= 2 | cooks.distance(lm6) >= 1, 1, 0))) %>%
   select(date, felonies, temp_min_degF, any_precip, is_holiday, is_school_day, day_of_week, problematic_obs)
 save(reg_dataset_flagged, file = "datasets/reg_dataset_flagged_R_obj")
+
+# save sample dataset for presentation
+(reg_dataset %>%
+  select(date, felonies, day_of_week, temp_min_degF, any_precip,
+         is_warm, is_holiday, is_school_day))[c(1:5, 185:189, 365),] %>%
+  write.csv(., file="presentation/dataset_sample_1.csv")
+
 
