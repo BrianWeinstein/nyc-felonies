@@ -171,10 +171,64 @@ summary(lmd3)
 
 
 
+# Remove interaction between temp_jump and temp_min_degF
+lmd4 <- lm(formula =
+             felonies_diff ~
+             temp_jump + temp_min_degF +
+             any_precip + is_holiday + is_school_day +day_of_week,
+           data = as.data.frame(reg_dataset_diff))
+summary(lmd4)
+
+# plot the case influence statistics
+lmd4_cistat_plot <- PlotCIStats(model = lmd4, x_var = reg_dataset_diff$date, label_leverage = T)
+ggsave(filename="model_felonies_diff_plots/lmd4_caseInfluenceStats.png",
+       plot = lmd4_cistat_plot, width=10, height=6, units="in")
+
+# Excl days with problematic studRes or cooksDist
+lmd5 <- lm(formula =
+             felonies_diff ~
+             temp_jump + temp_min_degF +
+             any_precip + is_holiday + is_school_day +day_of_week,
+           data = as.data.frame(reg_dataset_diff),
+           subset = abs(studres(lmd4)) < 2 & cooks.distance(lmd4) < 1)
+summary(lmd5)
 
 
 
 
+# temp_min_degF isn't significant in either model
+# any precip isn't significant in either model
+# is_holiday isn't significant in either model
+# is_school_day isn't significant in either model
 
+lmd6 <- lm(formula = felonies_diff ~ temp_jump + day_of_week, data = as.data.frame(reg_dataset_diff))
+summary(lmd6)
+
+anova(lmd6, lm(formula = felonies_diff ~ temp_jump, data = as.data.frame(reg_dataset_diff)))
+
+lmd6_cistat_plot <- PlotCIStats(model = lmd6, x_var = reg_dataset_diff$date, label_leverage = T)
+ggsave(filename="model_felonies_diff_plots/lmd6_caseInfluenceStats.png",
+       plot = lmd6_cistat_plot, width=10, height=6, units="in")
+
+lmd7 <- lm(formula = felonies_diff ~ temp_jump + day_of_week,
+           data = as.data.frame(reg_dataset_diff),
+           subset= abs(studres(lmd6)) < 2 & cooks.distance(lmd6) < 1)
+summary(lmd7)
+
+anova(lmd7, lm(formula = felonies_diff ~ temp_jump, data = as.data.frame(reg_dataset_diff),
+               subset= abs(studres(lmd6)) < 2 & cooks.distance(lmd6) < 1))
+
+
+summary(lmd6)
+# after accounting for day of week, the data provides suggestive, but inconclusive evidence that
+# large (8 degree) temp increases is associated with 8.942 additional felonies per day
+# two-sided p-value 0.10006
+confint(lmd6)
+# 95pct confint c(-1.723365, 19.606819) felonies per day
+
+summary(lmd7)
+# after removing problematic cases (with high studentized residuals), after accounting for day of week
+# the data provides no evidence of an association between large temp increases and an increase in felonies
+# two-sided p-value 0.185603
 
 
