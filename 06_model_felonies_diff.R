@@ -74,7 +74,6 @@ PlotCIStats <- function(model, x_var, label_leverage=TRUE, label_studRes=TRUE, l
 }
 
 
-
 # Define felonies_diff and temp_min_degF_diff ############################################################
 
 reg_dataset_diff <- bind_rows(data.frame(date=as.Date("2014-12-31"),
@@ -91,6 +90,23 @@ reg_dataset_diff <- bind_rows(data.frame(date=as.Date("2014-12-31"),
   filter(date >= "2015-01-01" & date <= "2015-12-31") %>%
   mutate(temp_jump=factor(ifelse(temp_min_degF_diff > 8, 1, 0))) # approx 10% of dataset had >8 degrees increase
 
+# save sample dataset for presentation
+(reg_dataset_diff %>%
+  select(date, felonies, felonies_diff, day_of_week, temp_min_degF, temp_min_degF_diff, any_precip,
+         is_holiday, is_school_day))[c(1:5, 357:358, 365),] %>%
+  write.csv(., file="presentation/dataset_sample_2.csv")
+
+
+
+
+# Plot the distribution of felonies_diff ############################################################
+
+ggplot(reg_dataset_diff, aes(x=felonies_diff)) +
+  geom_histogram(bins=20) +
+  labs(x="Difference in Felonies from Previous Day", y="Count of Days")
+ggsave(filename="model_felonies_diff_plots/feloniesDiff_hist.png", width=4, height=3.5, units="in")
+
+
 
 
 # Is an increase in temp associated with an increase in felonies? ############################################################
@@ -101,7 +117,7 @@ summary(reg_dataset_diff)
 # (felonies today - yesterday) on jump days
 ggplot(filter(reg_dataset_diff, temp_jump==1), aes(y=felonies_diff, x=temp_jump)) +
   geom_boxplot() +
-  labs(x=NULL, y="Difference in Felonies", title="Difference in Felonies from Previous Day\nOn Days with >8 deggree F Increase From Previous Day") +
+  labs(x=NULL, y="Difference in Felonies", title="Difference in Felonies from Previous Day\nOn Days with >8 deggree F Increase from Previous Day") +
   theme(axis.text.x=element_blank())
 ggsave(filename="model_felonies_diff_plots/tt1_felonies_vs_pairedttest.png", width=6.125, height=3.5, units="in")
 tt1 <- t.test(x=filter(reg_dataset_diff, temp_jump==1)$felonies_diff,
@@ -109,7 +125,8 @@ tt1 <- t.test(x=filter(reg_dataset_diff, temp_jump==1)$felonies_diff,
 tt1$p.value / 2
 tt1
 tt1$conf.int
-# moderate evidence that days with large (>8 degree F) increases in temp from previous day are associated with an increase in felonies
+# suggestive, but inconclusive evidence that days with large (>8 degree F) increases in temp
+# from previous day are associated with an increase in felonies
 # estimated increase of 7.351351 additional felonies on days after an >8 degF increase in temp
 # one sided p-value 0.06969619 from paired t-test
 # 95% ci -2.512565 17.215267
@@ -119,7 +136,7 @@ tt1$conf.int
 # how does this compare to non-jump days?
 ggplot(reg_dataset_diff, aes(y=felonies_diff, x=temp_jump)) +
   geom_boxplot() +
-  labs(x="On Days with <=8 deggree F Increase From Previous Day (0) vs >8 (1)", y="Difference in Felonies", title="Difference in Felonies from Previous Day")
+  labs(x="On Days with <=8 deggree F Increase from Previous Day (0) vs >8 (1)", y="Difference in Felonies", title="Difference in Felonies from Previous Day")
 ggsave(filename="model_felonies_diff_plots/tt2_felonies_vs_tempJump.png", width=6.125, height=3.5, units="in")
 tt2 <- t.test(formula=felonies_diff~temp_jump, data=reg_dataset_diff, var.equal=TRUE, conf.level=0.95)
 tt2$p.value / 2
@@ -146,6 +163,13 @@ lmd2 <- lm(formula =
              any_precip + is_holiday + is_school_day +day_of_week,
            data = as.data.frame(reg_dataset_diff))
 summary(lmd2)
+
+# use extra sum of squares F test to see if day_of_week is significant
+anova(lmd2, lm(formula =
+                 felonies_diff ~
+                 temp_jump + temp_min_degF + temp_jump*temp_min_degF +
+                 any_precip + is_holiday + is_school_day,
+               data = as.data.frame(reg_dataset_diff)))
 
 # check the residuals
 temp_plot_data <- reg_dataset_diff %>%
@@ -223,6 +247,20 @@ summary(lmd6)
 anova(lmd6, lm(formula = felonies_diff ~ temp_jump, data = as.data.frame(reg_dataset_diff)))
 # day_of_week is very significant
 
+# check the residuals
+temp_plot_data <- reg_dataset_diff %>%
+  mutate(fitted=eval(lmd6$fitted.values),
+         resid=eval(lmd6$residuals),
+         is_resid_outlier=IsOutlier(eval(lmd6$residuals)))
+ggplot(temp_plot_data,
+       aes(x=fitted, y=resid)) +
+  geom_jitter() +
+  geom_hline(yintercept=0, linetype="dashed") +
+  labs(x="Fitted Values", y="Residuals") +
+  geom_text_repel(data = filter(temp_plot_data, is_resid_outlier==TRUE), aes(label=format(date, format="%b %d")), size=3.5)
+ggsave(filename="model_felonies_diff_plots/lmd6_residuals.png", width=6.125, height=3.5, units="in")
+
+# plot the case influence statistics
 lmd6_cistat_plot <- PlotCIStats(model = lmd6, x_var = reg_dataset_diff$date, label_leverage = T)
 ggsave(filename="model_felonies_diff_plots/lmd6_caseInfluenceStats.png",
        plot = lmd6_cistat_plot, width=10, height=6, units="in")
@@ -248,7 +286,12 @@ confint(lmd6)
 summary(lmd7)
 # after removing problematic cases (with high studentized residuals), after accounting for day of week
 # the data provides suggestive, but inconclusive evidence of an association between large temp increases and an increase in felonies
+# large (8 degree) temp increases is associated with 6.291 additional felonies per day
 # one-sided p-value 0.0928015
+confint(lmd7)
+# 95pct confint c(-3.0380589 15.620380) felonies per day
+
+
 
 # what is removed?
 reg_dataset_diff %>% filter(abs(studres(lmd6)) >= 2 | cooks.distance(lmd6) >= 1)
@@ -256,15 +299,17 @@ reg_dataset_diff %>% filter(abs(studres(lmd6)) >= 2 | cooks.distance(lmd6) >= 1)
 # plot the removed observations
 temp_plot_data <- reg_dataset_diff %>%
   mutate(problematic7=abs(studres(lmd6)) >= 2 | cooks.distance(lmd6) >= 1,
-         temp_jump_jitter=as.numeric(as.character(temp_jump)) + runif(n = nrow(.), min = -0.2, max = 0.2))
+         temp_jump_jitter=as.numeric(as.character(temp_jump)) + runif(n = nrow(.), min = -0.2, max = 0.2),
+         lmd6resid=eval(lmd6$residuals),
+         preslmd6_temp_jump=lmd6resid+(as.numeric(as.character(temp_jump))*lmd6$coefficients["temp_jump1"][[1]]))
 set.seed(1)
-ggplot(temp_plot_data, aes(x=temp_jump_jitter, y=felonies_diff)) +
+ggplot(temp_plot_data, aes(x=temp_jump_jitter, y=preslmd6_temp_jump)) +
   geom_point(aes(color=problematic7, shape=problematic7), show.legend = FALSE) +
   geom_text_repel(data = filter(temp_plot_data, problematic7==TRUE),
                   aes(label=format(date, format="%b %d")), size=3.5, #fontface="bold",
                   show.legend = FALSE) +
-  labs(x="On Days with <=8 deggree F Increase From Previous Day (0) vs >8 (1)", y="Difference in Felonies", title="Difference in Felonies from Previous Day") +
+  labs(x="On Days with <=8 deggree F Increase From Previous Day (0) vs >8 (1)\n[jittered]", y="Partial Residual\n(difference in felonies,adjusted\nfor day of week)") +
   scale_x_continuous(breaks = c(0, 1))
-ggsave(filename="model_felonies_diff_plots/lmd6_feloniesDiff_vs_tempJump_problematicObs.png", width=6.125, height=3.5, units="in")
+ggsave(filename="model_felonies_diff_plots/lmd6_pres_tempJump.png", width=6.125, height=3.5, units="in")
 rm(temp_plot_data)
 
