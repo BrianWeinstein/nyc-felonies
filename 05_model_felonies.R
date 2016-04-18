@@ -302,6 +302,7 @@ lm6 <- lm(formula =
             is_holiday + is_school_day + day_of_week,
           data=reg_dataset)
 summary(lm6)
+confint(lm6)
 
 # use extra sum of squares F test to see if day_of_week is significant
 anova(lm6, lm(formula = felonies ~ temp_min_degF + any_precip + is_holiday + is_school_day, data=reg_dataset))
@@ -313,6 +314,7 @@ lm7 <- lm(formula =
           data=reg_dataset,
           subset = abs(studres(lm6)) < 2 & cooks.distance(lm6) < 1)
 summary(lm7)
+confint(lm7)
 
 # use extra sum of squares F test to see if day_of_week is significant
 anova(lm7, lm(formula = felonies ~ temp_min_degF + any_precip + is_holiday + is_school_day, data=reg_dataset, subset = abs(studres(lm6)) < 2 & cooks.distance(lm6) < 1))
