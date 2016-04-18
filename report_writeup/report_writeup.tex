@@ -1,17 +1,5 @@
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 \documentclass[12pt,notitlepage]{article}
 
 %\documentclass[twocolumn,secnumarabic,amssymb, nobibnotes, aps, prd]{revtex4-1}
@@ -19,7 +7,7 @@
 %\documentclass[pra,preprint]{revtex4}
 %\documentclass[pra,twocolumn]{revtex4}
 
-%\usepackage[lmargin=1.in,rmargin=1.in,tmargin=1.in,bmargin=1in]{geometry}
+\usepackage[lmargin=1.in,rmargin=1.in,tmargin=1.in,bmargin=1in]{geometry}
 \usepackage{setspace} %\doublespacing
 \usepackage[pdftex]{graphicx}
 \usepackage{latexsym}
@@ -30,7 +18,7 @@
 \usepackage{titling}
 \usepackage[
 	pdfauthor={Brian Weinstein},
-	pdftitle={Final Project Title},
+	pdftitle={The Association Between Felonies in NYC and Weather and Temporal Conditions},
 	bookmarks=true,
 	colorlinks=true,
 	linkcolor=blue,
@@ -50,7 +38,7 @@
 
 \begin{document}
 
-\title{Final Project Title}
+\title{The Association Between Felonies in NYC and Weather and Temporal Conditions}
 \author{Brian Weinstein}
 \affil{\textit{Columbia University} \\ \textit{STAT W4201: Advanced Data Analysis}}
 \date{May 2, 2016}
@@ -61,7 +49,22 @@
 
 \begin{abstract}
 \singlespacing
-An abstract briefly summarizing your work.
+
+\noindent \textbf{Background:} The New York City Police Department (NYPD) recently released incident-level felony data to the New York City Open Data portal. The dataset includes timestamped information for all felonies committed in NYC.
+
+We first examine the association between the daily number of felonies committed in NYC in 2015 and temperature, presence of precipitation, day of week, federal and New York (NY) holidays, and school days. Second, we examine the association between large increases in temperature ($>8 ^\circ$F from the previous day) and increases in the number of felonies.
+
+\noindent \textbf{Methods and Results:} We initially test for a difference between the number of felonies on warmer and cooler days ($\geq 51.98 ^\circ$F and $< 51.98 ^\circ$F, respectively --- the NYC 2015 median), finding overwhelming evidence of a difference, with there being 44 more felonies, on average, on warmer days than on cooler day (95\% CI 38 to 51 felonies; two sided p-value $<0.000001$ from a two-sample t-test).
+
+After accounting for presence of precipitation, holidays, school days, and day of week, the data provides overwhelming evidence that for every $1 ^\circ$F increase in temperature there are, on average, 1.4 additional felonies per day (95\% CI 1.3 to 1.6 felonies; two-sided p-value $<0.000001$ for a test that the linear regression coefficient is 0).
+
+We next find that, after accounting for day of week, there is little evidence to suggest that increases in felonies from the previous day are associated with large increases in temperature (two-sided p-value 0.1001 for a test that the ``difference in differences'' linear regression coefficient is 0).
+
+\noindent \textbf{Conclusions:} There is a clear association between warmer temperatures and an increased number of felonies. There is no association between increases in the number of felonies and large increases in temperature.
+
+
+
+
 \end{abstract}
 
 
@@ -79,13 +82,7 @@ An abstract briefly summarizing your work.
 
 Questions of interest:
 \begin{itemize}
-\item are the number of felonies associated with temp? (either min or max temp)
-\item is felonies associated with presence of precipitation?
-\item does the association between precip and felonies depend on temperature?
-\item after taking temp into account, is felonies associated with accidents?
-\item is felonies associated with holidays?
-\item is felonies associated with school days?
-\item is felonies associated with day of week?
+\item asdf
 \end{itemize}
 
 
