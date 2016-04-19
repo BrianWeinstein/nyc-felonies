@@ -254,7 +254,7 @@ temp_plot_data <- reg_dataset_diff %>%
          is_resid_outlier=IsOutlier(eval(lmd6$residuals)))
 ggplot(temp_plot_data,
        aes(x=fitted, y=resid)) +
-  geom_jitter() +
+  geom_jitter(aes(color=day_of_week, shape=temp_jump), size=2) +
   geom_hline(yintercept=0, linetype="dashed") +
   labs(x="Fitted Values", y="Residuals") +
   geom_text_repel(data = filter(temp_plot_data, is_resid_outlier==TRUE), aes(label=format(date, format="%b %d")), size=3.5)
