@@ -32,6 +32,7 @@
 \usepackage{float}
 \usepackage{caption}
 \usepackage{xspace}
+\usepackage{underscore}
 
 
 \newcommand{\degf}{^\circ\text{F}}
@@ -90,21 +91,55 @@ We first examine the association between felonies and temperature, and then meas
 
 
 
-\subsection{the data set}
+\subsection{Dataset}
 
-\subsubsection{Data sources}
+\subsubsection{Data Schema and Sources}
+
+The class, description, and source for each variable in the dataset is outlined below. Only those variables used in the analyses are included here --- redundant and untranformed variables that were removed during exploratory analysis are not described below. The dataset contains 365 observations, one for each date in 2015.
 
 \begin{itemize}
-\item NYPD 7 Major Felony Incidents: data.cityofnewyork.us/d/hyij-8hr7
-The incident-level felonies included in the dataset are burglary, felony assault, grand larceny, grand larceny of motor vehicle, murder and non-negligent manslaughter, rape, and robbery.
+\item \texttt{felonies} (integer) is a derived count of the number of felonies committed on each day in NYC in 2015. The values are aggregate counts from the ``NYPD 7 Major Felony Incidents'' dataset in the NYC Open Data Portal [\href{https://data.cityofnewyork.us/Public-Safety/NYPD-7-Major-Felony-Incidents/hyij-8hr7}{data.cityofnewyork.us/d/hyij-8hr7}]. The incident-level felonies included in the dataset are burglary, felony assault, grand larceny, grand larceny of motor vehicle, murder and non-negligent manslaughter, rape, and robbery.
 
-\item NYPD Motor Vehicle Collisions: data.cityofnewyork.us/d/h9gi-nx95
-\item National Centers for Environmental Information (weather conditions and temperature data): ncdc.noaa.gov/cdo-web/search
-\item New York State Holidays: cs.ny.gov/attendance\_leave/2015\_legal\_holidays.cfm
-\item Federal Holidays: opm.gov/policy-data-oversight/snow-dismissal-procedures/federal-holidays/\#url=2015
-\item School Attendance: github.com/ajschumacher/NYCattends/tree/master/xml
-(The NYC Department of Education also publishes this data to the NYC Open Data portal, but historical data is only retained there for the current school year. Instead I’ll scrape the daily XML snapshots stored in the linked Github repository.)
+\item \texttt{temp_min_degF} (numeric) is the minimum daily temperature on the given date, as reported by the New York Central Park Belvedere Tower weather station. The data was requested via the National Centers for Environmental Information [\href{http://www.ncdc.noaa.gov/cdo-web/search}{ncdc.noaa.gov/cdo-web/search}].
+
+\item \texttt{is_warm} (factor) is an indicator variable, taking value ``1'' if \texttt{temp_min_degF} is $\geq 51.98 \degf$ (the median for 2015) on the given date, and ``0'' otherwise.
+
+\item \texttt{any_precip} (factor) is an indicator variable, taking value ``1'' if there was any precipitation on the given date, and ``0'' otherwise. See \texttt{temp_min_degF} for source information.
+
+
+\item \texttt{is_holiday} (factor) is an indicator variable, taking value ``1'' if the given date is a NY or federal holiday, or value``0'' otherwise. The NY and federal holidays were defined using the lists provided by the NY State Department of Civil Service [\href{https://www.cs.ny.gov/attendance_leave/2015_legal_holidays.cfm}{cs.ny.gov/attendance_leave/2015_legal_holidays.cfm}] and U.S. Office of Personnel Management [\href{https://www.opm.gov/policy-data-oversight/snow-dismissal-procedures/federal-holidays/\#url=2015}{opm.gov/policy-data-oversight/snow-dismissal-procedures/federal-holidays/\#url=2015}], respectively.
+
+
+\item \texttt{is_school_day} (factor) is an indicator variable, taking value ``1'' if NYC Public Schools were open and in session on the given date, or value``0'' otherwise. Although the NYC Department of Education publishes this data to the NYC Open Data Portal, the historical data is only retained there for the current school year. Instead we scrape the attendance data from XML files in Aaron Schumacher's ``NYCattends'' Github repository [\href{https://github.com/ajschumacher/NYCattends/tree/master/xml}{github.com/ajschumacher/NYCattends/tree/master/xml}].
+% link in the NYC Open Data Portal: \href{https://data.cityofnewyork.us/Education/Attendance-4PM-Report/madj-gkhr}{data.cityofnewyork.us/d/madj-gkhr}
+
+
+\item \texttt{day_of_week} (factor) is a categorical variable indicating the day of week (Sunday=``1'', Monday=``2'' $, \ldots, $ Saturday=``7''). 
+
+\item \texttt{felonies_diff} (numeric) indicates for a given date the difference in the number of felonies as compared to the previous day. On Jan. 3, 2015, for example, \texttt{felonies_diff} = 6, since there were 6 more felonies committed on Jan. 3 than on Jan. 2.
+
+\item \texttt{temp_min_degF_diff} (numeric) indicates for a given date the difference in \texttt{temp_min_degF} as compared to the previous day. On Jan. 3, 2015, for example, \texttt{temp_min_degF_diff} = -1.98, since the daily minimum temperature (\texttt{temp_min_degF}) was $1.98 \degf$ cooler on Jan. 3 than on Jan. 2.
+
+\item \texttt{temp_jump} (factor) is an indicator variable, taking value ``1'' if \texttt{temp_min_degF_diff} $> 8$, or value``0'' otherwise. An increase of $> 8 \degf$ put the day of interest in the top 10\% of temperature increases in 2015.
+
 \end{itemize}
+
+%\begin{center}
+%    \begin{tabular}{ | l | l | p{5cm} | p{5cm} |}
+%    \hline
+%    Variable Name & Class & Description & Source \\ \hline \hline
+%    \texttt{date} & Date & Date of observation. &  \\ \hline
+%    \texttt{felonies} & Numeric & Number of felonies occurring on the indicated date. & Cloudy with rain, across many northern regions. Clear spells 
+%    across most of Scotland and Northern Ireland, 
+%    but rain reaching the far northwest. \\ \hline
+%    Wednesday & 10C & 21C & Rain will still linger for the morning. 
+%    Conditions will improve by early afternoon and continue 
+%    throughout the evening. \\
+%    \hline
+%    \end{tabular}
+%\end{center}
+
+
 
 \subsubsection{Data cleaning}
 
