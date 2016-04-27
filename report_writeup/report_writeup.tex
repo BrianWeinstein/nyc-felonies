@@ -144,19 +144,39 @@ The class, description, and source for each variable in the dataset is outlined 
 
 \subsection{Exploratory Analysis and Data Cleaning}
 
-
+We first examine pairwise scatterplots of some of the numeric variables in the raw dataset (\texttt{felonies}, \texttt{temp_min_degF}, \texttt{temp_max_degF}, and \texttt{school_attendance_pct}), as shown in Figure \ref{fig:pairsNumericExclAcc}.
 
 \begin{figure}[!h]
 	\centering
-	\captionsetup{width=0.8\textwidth}
+	\captionsetup{width=0.9\textwidth}
 	\includegraphics[width=6in]{figures/pairsNumericExclAcc.png}
-	\caption{Scatterplot of deviance resid.}
-	\label{asdf}
+	\caption{Pairwise scatterplots of some of the numeric variables in the raw dataset.}
+	\label{fig:pairsNumericExclAcc}
 \end{figure}
 
+From this figure we first notice that there are approximately linear relationships between \texttt{felonies} and \texttt{temp_min_degF}, and between \texttt{felonies} and \texttt{temp_max_degF}. There is also strong collinearity between \texttt{temp_min_degF} and \texttt{temp_max_degF} (correlation: 0.969), however, and we thus remove one of these variables (\texttt{temp_max_degF}) from the covariates that will be used in the regression model.
 
+Figure \ref{fig:pairsNumericExclAcc} also shows that there is no linear relationship between \texttt{felonies} and \texttt{school_attendance_pct} (the percent of students present in school on a given day). Any non-school-day has 0\% attendance, so instead of using this as a numeric variable, we convert it to the indicator variable \texttt{is_school_day}, taking value ``1'' if NYC Public Schools were open and in session on the given date (i.e., if \texttt{school_attendance_pct} is $>0$), or value ``0'' otherwise.
 
+Faceted boxplots of the categorical variables are shown in Figure \ref{fig:facetCategorical}.
 
+\begin{figure}[!h]
+	\centering
+	\captionsetup{width=0.9\textwidth}
+	\includegraphics[width=6in]{figures/facetCategorical.png}
+	\caption{Faceted boxplots of the categorical variables in the dataset.}
+	\label{fig:facetCategorical}
+\end{figure}
+
+A Q-Q plot of \texttt{felonies} in Figure \ref{fig:qqFelonies} shows that the variable isn't perfectly normally distributed, but that normality is a reasonably good assumption.
+
+\begin{figure}[!h]
+	\centering
+	\captionsetup{width=0.9\textwidth}
+	\includegraphics[width=4in]{figures/qqFelonies.png}
+	\caption{Faceted boxplots of the categorical variables in the dataset.}
+	\label{fig:qqFelonies}
+\end{figure}
 
 
 

@@ -40,7 +40,7 @@ plot.pairs.exclAcc <- ggpairs(data=select(reg_dataset,
                                   school_attendance_pct, felonies),
                       lower=list(continuous=wrap("points", size=0.5)))
 plot.pairs.exclAcc
-png(filename="report_writeup/figures/pairsNumericExclAcc.png", width=10, height=8, units="in", res=300)
+png(filename="report_writeup/figures/pairsNumericExclAcc.png", width=12, height=7.2, units="in", res=300)
 print(plot.pairs.exclAcc)
 dev.off()
 rm(plot.pairs.exclAcc)
@@ -83,13 +83,14 @@ ggplot(reg_dataset %>%
                 c(is_school_day, is_weekend, day_of_week, any_precip, is_holiday)),
        aes(x=value, y=felonies)) +
   geom_boxplot() +
-  facet_wrap(~ metric, scales = "free_x", ncol = 3, switch = "x") +
+  facet_wrap(~ metric, scales = "free_x", ncol = 5, switch = "x") +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
         panel.border = element_rect(colour = "black")) +
   labs(x=NULL)
 ggsave(filename="eda_plots/facet_categorical.png", width=9, height=5, units="in", dpi = 300)
+ggsave(filename="report_writeup/figures/facetCategorical.png", width=7.5, height=2, units="in", dpi = 300)
 
 
 # is_school_day
@@ -138,6 +139,14 @@ ggplot(reg_dataset, aes(x=date, y=felonies)) + geom_point()
 ggsave(filename="eda_plots/felonies_vs_maxTemp.png", width=6.125, height=3.5, units="in")
 # clearly a sinusoidal trend
 # temp will likely explain this behavior
+
+# qq plot of felonies ############################################################
+
+ggplot(reg_dataset, aes(sample=felonies)) +
+  geom_qq() +
+  labs(x="Theoretical Quantiles", y="Sample Quantiles (felonies)")
+ggsave(filename="report_writeup/figures/qqFelonies.png", width=6.125, height=3, units="in")
+
 
 
 # save reg_dataset as csv and r object ############################################################
