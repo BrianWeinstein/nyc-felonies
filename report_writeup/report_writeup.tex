@@ -32,10 +32,11 @@
 \usepackage{float}
 \usepackage{caption}
 \usepackage{xspace}
-\usepackage{underscore}
+\usepackage{underscore} % can't use underscores in file names (e.g., image names) when using this package
 
 
 \newcommand{\degf}{^\circ\text{F}}
+
 
 
 
@@ -141,10 +142,25 @@ The class, description, and source for each variable in the dataset is outlined 
 
 
 
-\subsubsection{Data cleaning}
+\subsection{Exploratory Analysis and Data Cleaning}
 
 
-\subsubsection{EDA}
+
+\begin{figure}[!h]
+	\centering
+	\captionsetup{width=0.8\textwidth}
+	\includegraphics[width=6in]{figures/pairsNumericExclAcc.png}
+	\caption{Scatterplot of deviance resid.}
+	\label{asdf}
+\end{figure}
+
+
+
+
+
+
+
+
 
 
 \subsection{the organization of the entire report}

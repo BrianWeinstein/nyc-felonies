@@ -33,6 +33,18 @@ print(plot.pairs)
 dev.off()
 rm(plot.pairs)
 
+
+# plot a matrix of pairwise scatterplots for the numeric vars, excluding accidents
+plot.pairs.exclAcc <- ggpairs(data=select(reg_dataset,
+                                  temp_min_degF, temp_max_degF,
+                                  school_attendance_pct, felonies),
+                      lower=list(continuous=wrap("points", size=0.5)))
+plot.pairs.exclAcc
+png(filename="report_writeup/figures/pairsNumericExclAcc.png", width=10, height=8, units="in", res=300)
+print(plot.pairs.exclAcc)
+dev.off()
+rm(plot.pairs.exclAcc)
+
 # many of the numeric covariates are highly correlated
 
 # temp_min_degF and temp_max_degF
