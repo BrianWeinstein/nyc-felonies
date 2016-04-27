@@ -82,13 +82,20 @@ We next find that, after accounting for day of week, there is little evidence to
 \section{Introduction}
 
 
-\subsection{Questions of Interest}
 
 After many years of pressure, the New York City Police Department (NYPD) recently released incident-level felony data to the NYC Open Data portal, as part of their initiative to improve their accessibility, transparency, and accountability. Prior to this release, felony data had only been provided in an aggregated format (by week and police precinct), and was done so only in PDF and Excel files on a weekly and quarterly basis.
 
-In this paper, we use the newly-released data to examine the association between the daily number of felonies committed in New York City (NYC) and: day of week, outside air temperature, precipitation, federal and New York (NY) holidays, and public school days. In this paper, we measure the association between the number of felonies and these variables, and for a given set of these conditions, estimate how many felonies the NYPD can reasonably expect.
+In this paper, we use the newly-released data to examine the association between the daily number of felonies committed in New York City (NYC) and: day of week, outside air temperature, precipitation, federal and New York (NY) holidays, and public school days.
 
-We first examine the association between felonies and temperature, and then measure the association between felonies and the additional variables outlined above, after taking temperature into account. Second, we examine if large ($>8 \degf$) increases in temperature, as compared the previous day, can explain spikes in the number of felonies.
+\subsection{Questions of Interest}
+
+In this paper we study three main questions of interest:
+
+\begin{itemize}
+\item Are felonies associated with temperature? After taking temperature into account, is felonies associated with precipitation, school days, holidays, and day of week?
+\item Although there’s no causal relationship, for a given set of these conditions, how many felonies can the NYPD reasonably expect?
+\item Are felonies associated with large ($>8 \degf$) increases in temperature (from the previous day)?
+\end{itemize}
 
 
 
@@ -140,9 +147,14 @@ The class, description, and source for each variable in the dataset is outlined 
 %    \end{tabular}
 %\end{center}
 
+\subsection{Report Overview}
+
+In Section \ref{sec:eda} we present some exploratory analysis and plots, in Sections \ref{sec:linearRegressionModelAndAssumptions} and \ref{sec:statisticalAnalysisAndInference} we walkthrough the model setup and statistical analysis, in Section \ref{sec:modelChecking} we do some model checking, and in Section \ref{sec:conclusion} we present our conclusions.
+
 
 
 \subsection{Exploratory Analysis and Data Cleaning}
+\label{sec:eda}
 
 We first examine pairwise scatterplots of some of the numeric variables in the raw dataset (\texttt{felonies}, \texttt{temp_min_degF}, \texttt{temp_max_degF}, and \texttt{school_attendance_pct}), as shown in Figure \ref{fig:pairsNumericExclAcc}.
 
@@ -154,7 +166,7 @@ We first examine pairwise scatterplots of some of the numeric variables in the r
 	\label{fig:pairsNumericExclAcc}
 \end{figure}
 
-From this figure we first notice that there are approximately linear relationships between \texttt{felonies} and \texttt{temp_min_degF}, and between \texttt{felonies} and \texttt{temp_max_degF}. There is also strong collinearity between \texttt{temp_min_degF} and \texttt{temp_max_degF} (correlation: 0.969), however, and we thus remove one of these variables (\texttt{temp_max_degF}) from the covariates that will be used in the regression model.
+From this figure we first notice that there are approximately linear relationships between \texttt{felonies} and \texttt{temp_min_degF}, and between \texttt{felonies} and \texttt{temp_max_degF}. There is also strong collinearity between \texttt{temp_min_degF} and \texttt{temp_max_degF} (correlation: 0.969), however, so we remove one of these variables (\texttt{temp_max_degF}) from the covariates that will be used in the regression model.
 
 Figure \ref{fig:pairsNumericExclAcc} also shows that there is no linear relationship between \texttt{felonies} and \texttt{school_attendance_pct} (the percent of students present in school on a given day). Any non-school-day has 0\% attendance, so instead of using this as a numeric variable, we convert it to the indicator variable \texttt{is_school_day}, taking value ``1'' if NYC Public Schools were open and in session on the given date (i.e., if \texttt{school_attendance_pct} is $>0$), or value ``0'' otherwise.
 
@@ -181,22 +193,15 @@ A Q-Q plot of \texttt{felonies} in Figure \ref{fig:qqFelonies} shows that the va
 
 
 
-
-
-\subsection{the organization of the entire report}
-
-
-
-
-
-
 \section{statistical model and statistical analysis}
 
 
 \subsection{model setup: the statistical model employed and assumptions}
+\label{sec:linearRegressionModelAndAssumptions}
 
 
 \subsection{statistical analysis / inference}
+\label{sec:statisticalAnalysisAndInference}
 
 
 
@@ -204,6 +209,7 @@ A Q-Q plot of \texttt{felonies} in Figure \ref{fig:qqFelonies} shows that the va
 
 
 \section{model checking (and model improvement if the originally proposed model is not appropriate)}
+\label{sec:modelChecking}
 
 
 
@@ -211,7 +217,7 @@ A Q-Q plot of \texttt{felonies} in Figure \ref{fig:qqFelonies} shows that the va
 
 
 \section{Conclusion}
-
+\label{sec:conclusion}
 
 
 
