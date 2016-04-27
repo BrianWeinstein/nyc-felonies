@@ -85,7 +85,7 @@ We next find that, after accounting for day of week, there is little evidence to
 
 After many years of pressure, the New York City Police Department (NYPD) recently released incident-level felony data to the NYC Open Data portal, as part of their initiative to improve their accessibility, transparency, and accountability. Prior to this release, felony data had only been provided in an aggregated format (by week and police precinct), and was done so only in PDF and Excel files on a weekly and quarterly basis.
 
-In this paper, we use the newly-released data to examine the association between the daily number of felonies committed in New York City (NYC) and: day of week, outside air temperature, precipitation, federal and New York (NY) holidays, and public school days. Although there is no causal connection, we measure the association between the number of felonies and these variables, and for a given set of these conditions, estimate how many felonies the NYPD can reasonably expect.
+In this paper, we use the newly-released data to examine the association between the daily number of felonies committed in New York City (NYC) and: day of week, outside air temperature, precipitation, federal and New York (NY) holidays, and public school days. In this paper, we measure the association between the number of felonies and these variables, and for a given set of these conditions, estimate how many felonies the NYPD can reasonably expect.
 
 We first examine the association between felonies and temperature, and then measure the association between felonies and the additional variables outlined above, after taking temperature into account. Second, we examine if large ($>8 \degf$) increases in temperature, as compared the previous day, can explain spikes in the number of felonies.
 
@@ -98,7 +98,7 @@ We first examine the association between felonies and temperature, and then meas
 The class, description, and source for each variable in the dataset is outlined below. Only those variables used in the analyses are included here --- redundant and untranformed variables that were removed during exploratory analysis are not described below. The dataset contains 365 observations, one for each date in 2015.
 
 \begin{itemize}
-\item \texttt{felonies} (integer) is a derived count of the number of felonies committed on each day in NYC in 2015. The values are aggregate counts from the ``NYPD 7 Major Felony Incidents'' dataset in the NYC Open Data Portal [\href{https://data.cityofnewyork.us/Public-Safety/NYPD-7-Major-Felony-Incidents/hyij-8hr7}{data.cityofnewyork.us/d/hyij-8hr7}]. The incident-level felonies included in the dataset are burglary, felony assault, grand larceny, grand larceny of motor vehicle, murder and non-negligent manslaughter, rape, and robbery.
+\item \texttt{felonies} (integer) is a count of the number of felonies committed on each day in NYC in 2015. The values are derived counts from the ``NYPD 7 Major Felony Incidents'' dataset in the NYC Open Data Portal [\href{https://data.cityofnewyork.us/Public-Safety/NYPD-7-Major-Felony-Incidents/hyij-8hr7}{data.cityofnewyork.us/d/hyij-8hr7}]. The felonies included in the dataset that contribute to the overall daily count are burglary, felony assault, grand larceny, grand larceny of motor vehicle, murder and non-negligent manslaughter, rape, and robbery.
 
 \item \texttt{temp_min_degF} (numeric) is the minimum daily temperature on the given date, as reported by the New York Central Park Belvedere Tower weather station. The data was requested via the National Centers for Environmental Information [\href{http://www.ncdc.noaa.gov/cdo-web/search}{ncdc.noaa.gov/cdo-web/search}].
 
@@ -110,7 +110,7 @@ The class, description, and source for each variable in the dataset is outlined 
 \item \texttt{is_holiday} (factor) is an indicator variable, taking value ``1'' if the given date is a NY or federal holiday, or value``0'' otherwise. The NY and federal holidays were defined using the lists provided by the NY State Department of Civil Service [\href{https://www.cs.ny.gov/attendance_leave/2015_legal_holidays.cfm}{cs.ny.gov/attendance_leave/2015_legal_holidays.cfm}] and U.S. Office of Personnel Management [\href{https://www.opm.gov/policy-data-oversight/snow-dismissal-procedures/federal-holidays/\#url=2015}{opm.gov/policy-data-oversight/snow-dismissal-procedures/federal-holidays/\#url=2015}], respectively.
 
 
-\item \texttt{is_school_day} (factor) is an indicator variable, taking value ``1'' if NYC Public Schools were open and in session on the given date, or value``0'' otherwise. Although the NYC Department of Education publishes this data to the NYC Open Data Portal, the historical data is only retained there for the current school year. Instead we scrape the attendance data from XML files in Aaron Schumacher's ``NYCattends'' Github repository [\href{https://github.com/ajschumacher/NYCattends/tree/master/xml}{github.com/ajschumacher/NYCattends/tree/master/xml}].
+\item \texttt{is_school_day} (factor) is an indicator variable, taking value ``1'' if NYC Public Schools were open and in session on the given date, or value ``0'' otherwise. Although the NYC Department of Education publishes this data to the NYC Open Data Portal, the historical data is only retained there for the current school year. Instead we scrape the attendance data from XML files in Aaron Schumacher's ``NYCattends'' Github repository [\href{https://github.com/ajschumacher/NYCattends/tree/master/xml}{github.com/ajschumacher/NYCattends/tree/master/xml}].
 % link in the NYC Open Data Portal: \href{https://data.cityofnewyork.us/Education/Attendance-4PM-Report/madj-gkhr}{data.cityofnewyork.us/d/madj-gkhr}
 
 
@@ -118,7 +118,7 @@ The class, description, and source for each variable in the dataset is outlined 
 
 \item \texttt{felonies_diff} (numeric) indicates for a given date the difference in the number of felonies as compared to the previous day. On Jan. 3, 2015, for example, \texttt{felonies_diff} = 6, since there were 6 more felonies committed on Jan. 3 than on Jan. 2.
 
-\item \texttt{temp_min_degF_diff} (numeric) indicates for a given date the difference in \texttt{temp_min_degF} as compared to the previous day. On Jan. 3, 2015, for example, \texttt{temp_min_degF_diff} = -1.98, since the daily minimum temperature (\texttt{temp_min_degF}) was $1.98 \degf$ cooler on Jan. 3 than on Jan. 2.
+\item \texttt{temp_min_degF_diff} (numeric) indicates for a given date the difference in \texttt{temp_min_degF} as compared to the previous day. On Jan. 3, 2015, for example, \texttt{temp_min_degF_diff} = -1.98, since the daily minimum temperature (\texttt{temp_min_degF}) was $1.98 \degf$ lower on Jan. 3 than on Jan. 2.
 
 \item \texttt{temp_jump} (factor) is an indicator variable, taking value ``1'' if \texttt{temp_min_degF_diff} $> 8$, or value ``0'' otherwise. An increase of $> 8 \degf$ puts the day of interest in the top 10\% of temperature increases in 2015.
 
