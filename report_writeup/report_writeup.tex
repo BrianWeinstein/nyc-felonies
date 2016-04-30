@@ -108,12 +108,13 @@ In this paper we study three main questions of interest:
 \setlength\itemsep{-1pt}
 \item Are felonies associated with temperature? After taking temperature into account, is felonies associated with precipitation, school days, holidays, and day of week?
 \item Although there’s no causal relationship, for a given set of these conditions, how many felonies can the NYPD reasonably expect?
-\item Are changes in the number of felonies, as compared to the previous day, associated with large ($>8 \degf$) increases in temperature?
+\item Are changes in the number of felonies, as compared to the previous day, associated with large ($>8 \degf$) increases in temperature, after taking into account temperature, precipitation, school days, holidays, and day of week?
 \end{enumerate}
 
 
 
 \subsection{Dataset}
+\label{sec:dataset}
 
 The class, description, and source for each variable in the dataset is outlined below. Only those variables used in the analyses are included here --- redundant and untranformed variables that were removed during exploratory analysis are not described below. The dataset contains 365 observations, one for each date in 2015.
 
@@ -198,6 +199,7 @@ Faceted boxplots of the categorical variables are shown in Figure \ref{fig:facet
 In this section we use simple and multiple linear regression to model the number of felonies per day (the first and second questions of interest).
 
 \subsection{Assumptions}
+\label{sec:feloniesAssumptions}
 
 We first assume that each occurrence of a felony is an independent Bernoulli event with very low probability $p$. The sum of these Bernoulli events is the number of felonies that occur on a given day. This sum follows a binomial distribution where $n$ is the number of opportunities for a felony to occur --- as a rough approximation this might be on the order of the population of NYC ($\sim 8.4$ million). Since $n$ is large enough, we can approximate this binomial distribution with a normal distribution.
 
@@ -286,7 +288,7 @@ After accounting for temperature, the holiday indicator, school day indicator, a
 
 \subsection{Model Checking}
 
-To check the validity of our model, we examine a residual plot and Q-Q plot in Figure \ref{fig:lm4ResidualsQQ}. The residual plot doesn't reveal any significant violations of the linearity, constant variance, or independence assumptions \todo{is this correct?}, and the Q-Q plot show the residuals aren't perfectly normal, but that normality isn't a bad approximation.
+To check the validity of our model, we examine a residual plot and Q-Q plot in Figure \ref{fig:lm4ResidualsQQ}. The residual plot doesn't reveal any significant violations of the linearity, constant variance, or independence assumptions, and the Q-Q plot shows that the residuals aren't perfectly normal, but that normality isn't a bad approximation.
 
 % two-column figure
 \begin{figure}[!h]
@@ -350,12 +352,6 @@ temp_min_degF:any_precip1   0.13801    0.13747   1.004    0.31615
 After removing the 17 problematic observations, the holiday indicator and school day indicator are now significant. The interaction between temperature and precipitation still isn't significant, even after removing the 17 observations. \todo{Possibly include inferences here. Otherwise, include them in the Conclusion section.}
 
 
-
-
-
-
-
-
 %If hitting the page limit, probably no need to remove the interaction term (models lm6 and lm7).
 
 
@@ -363,21 +359,93 @@ After removing the 17 problematic observations, the holiday indicator and school
 
 \section{Modeling the Day-to-Day Change in the Number of Felonies Per Day}
 
+As a supplementary analysis, we now explore if changes in the number of felonies, as compared to the previous day, is associated with large increases in temperature, after taking our other covariates into account (the third question of interest). The theory here is that spikes in temperature (e.g., at the beginning of a heat wave or on the first few days of spring) might influence the number of felonies that occur. In this section, \texttt{temp_jump} indicates if the temperature has increased by more than $8\degf$ as compared to the previous day.
+
+
+
+
 \subsection{Assumptions}
+
+In this section we use multiple linear regression to model \texttt{felonies_diff} (the difference in the number of felonies as compared to the previous day; see Section \ref{sec:dataset}). Again we assume the 4 assumptions of linear regression, as outlined in Section \ref{sec:feloniesAssumptions}.
 
 \subsection{Statistical Analysis}
 
+We now perform a multiple linear regression of \texttt{felonies_diff} on the variables shown in the regression summary below:
+
+\begin{codeSmall}
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)              -19.09877    6.66217  -2.867 0.004397 ** 
+temp_jump1                21.73759   16.38144   1.327 0.185381    
+temp_min_degF              0.12321    0.09743   1.265 0.206821    
+any_precip1               -1.90533    3.72032  -0.512 0.608873    
+is_holiday1                0.95049    9.39575   0.101 0.919480    
+is_school_day1             6.95124    4.60154   1.511 0.131779    
+day_of_week2              12.22189    6.99960   1.746 0.081669 .  
+day_of_week3               2.91295    6.97539   0.418 0.676491    
+day_of_week4              11.05330    6.99797   1.580 0.115120    
+day_of_week5               9.94665    6.94328   1.433 0.152872    
+day_of_week6              25.59847    6.96531   3.675 0.000275 ***
+day_of_week7               1.79654    6.14494   0.292 0.770183    
+temp_jump1:temp_min_degF  -0.28253    0.34895  -0.810 0.418679    
+\end{codeSmall}
+
+%Residual standard error: 31.23 on 352 degrees of freedom
+%Multiple R-squared:  0.103,	Adjusted R-squared:  0.07247 
+%F-statistic:  3.37 on 12 and 352 DF,  p-value: 0.0001127
+
+
+
+After accounting for temperature, precipitation, holidays, school days, and day of week, the data provides no evidence that changes in the number of felonies is associated with large increases in temperature (two-sided p-value 0.185381). The interaction between temperature and the temperature jump indicator is also not significant (two-sided p-value 0.418679).
+
+The data provides overwhelming evidence that \texttt{felonies_diff} is associated with \texttt{day_of_week} (p-value 0.003788 from an extra sum of squares F-test) --- on Fridays, for example, there are on average 26 more felonies than on the preceding Thursday (95\% CI 12 to 39 more felonies; two-sided p-value 0.000275).
+
+
 \subsection{Model Checking and Improvement}
 
+Neither a residual plot nor a Q-Q plot (not shown) reveal any significant violations of our assumptions. Case influence statistics reveal 12 potentially influential observations, but there is no change in interpretation once they're removed.
+
+To simplify the model, we now iteratively remove the non-significant variables from the regression, and end up with a model in which only \texttt{temp_jump} and \texttt{day_of_week} are remaining. The regression summary is shown below:
+
+\begin{codeSmall}
+             Estimate Std. Error t value Pr(>|t|)    
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   -13.338      4.383  -3.043  0.00252 ** 
+temp_jump1      8.942      5.423   1.649  0.10006    
+day_of_week2   16.480      6.113   2.696  0.00736 ** 
+day_of_week3    6.999      6.113   1.145  0.25305    
+day_of_week4   16.152      6.116   2.641  0.00863 ** 
+day_of_week5   14.496      6.085   2.382  0.01773 *  
+day_of_week6   30.208      6.121   4.936 1.23e-06 ***
+day_of_week7    1.746      6.127   0.285  0.77589    
+\end{codeSmall}
+
+%Residual standard error: 31.17 on 357 degrees of freedom
+%Multiple R-squared:  0.0941,	Adjusted R-squared:  0.07634 
+%F-statistic: 5.298 on 7 and 357 DF,  p-value: 8.909e-06
+
+The temperature jump indicator still is not significant (two-sided p-value 0.10006). Only the \texttt{day_of_week} variable has a significant relationship with day-to-day changes in the number of felonies (p-value $9 \times 10^{-6}$ from an extra sum of squares F-test) --- Fridays, for example, generally have 30 more felonies than the preceding Thursday (95\% CI 18 to 42 more felonies; two-sided p-value $1 \times 10^{-6}$).
 
 
-
-
-
-
-
-\section{Conclusion}
+\section{Conclusions}
 \label{sec:conclusion}
+
+\subsection{Statistical Conclusions}
+
+The data provides overwhelming evidence that felonies is associated with temperature. For every 1 $\degf$ increase in temperature, there are, on average, 1.38 additional felonies per day (95\% CI 1.22938 to 1.532569, two sided p-value $<2\times10^{-16}$).
+
+After accounting for temperature, there is convincing evidence that felonies is associated with precipitation. On average there are 21 fewer felonies on days with precipitation that on days without (95\% CI: 4 to 38 fewer felonies; two-sided p-value: 0.014990). The data also provides overwhelming evidence that felonies is associated with day of week (p-value $3 \times 10^{-6}$ from an extra sum of squares F-test).
+
+Initially, it did not appear that the number of felonies was associated with holidays or with school days, but after removing 17 observations with high studentized residuals, these variables became significant. From the revised model, there is suggestive, but inconclusive evidence that felonies is associated with holidays --- on average, holidays have 13 fewer felonies than non-holidays (95\% CI 0 to 27 fewer felonies; two-sided p-value 0.05275). Again from the revised model, there is moderate evidence that felonies is associated with school days --- on average, school days have 7 more felonies that non-school days (95\% CI 1 to 13 more felonies; two-sided p-value 0.03306).
+
+In both the initial and revised models, the interaction between temperature and precipitation was not significant (two-sided p-value was $>0.3$ in both models).
+
+
+From a supplementary analysis, after accounting for day of week, the data provides no evidence that day-to-day changes in the number of felonies is associated with large increases in temperature (an increase of $>8 \degf$ as compared to the previous day) (two-sided p-value 0.10006).
+
+
+\subsection{Scope of Inference}
+
+This is purely observational data --- observations weren't randomly sampled --- so these statistical associations cannot be used to draw causal connections. Further, any generalization of these results to cities other than NYC for time periods other than 2015 is speculative.
 
 
 

@@ -163,6 +163,7 @@ lmd2 <- lm(formula =
              any_precip + is_holiday + is_school_day +day_of_week,
            data = as.data.frame(reg_dataset_diff))
 summary(lmd2)
+confint(lmd2)
 
 # use extra sum of squares F test to see if day_of_week is significant
 anova(lmd2, lm(formula =
@@ -243,6 +244,7 @@ summary(lmd5)
 
 lmd6 <- lm(formula = felonies_diff ~ temp_jump + day_of_week, data = as.data.frame(reg_dataset_diff))
 summary(lmd6)
+confint(lmd6)
 
 anova(lmd6, lm(formula = felonies_diff ~ temp_jump, data = as.data.frame(reg_dataset_diff)))
 # day_of_week is very significant
@@ -313,3 +315,14 @@ ggplot(temp_plot_data, aes(x=temp_jump_jitter, y=preslmd6_temp_jump)) +
 ggsave(filename="model_felonies_diff_plots/lmd6_pres_tempJump.png", width=6.125, height=3.5, units="in")
 rm(temp_plot_data)
 
+
+
+# 
+# # fit felonies_diff with only day_of_week
+# lmd8 <- lm(formula = felonies_diff ~ day_of_week,
+#            data = as.data.frame(reg_dataset_diff))
+# summary(lmd8)
+# confint(lmd8)
+# 
+# anova(lmd8, lm(formula = felonies_diff ~ 1, data = as.data.frame(reg_dataset_diff)))
+# # day_of_week is very significant
