@@ -201,7 +201,7 @@ In this section we use simple and multiple linear regression to model the number
 
 \subsection{Assumptions}
 
-We first assume that each occurrence of a felony is an independent Bernoulli event with very low probability $p$. The sum of these Bernoulli events is the number of felonies that occur on a given day. It follows a binomial distribution where $n$ is the number of opportunities for a felony to occur --- as a rough approximation this might be on the order of the population of NYC ($\sim 8.4$ million). Since $n$ is large enough, we can approximate this binomial distribution with a normal distribution.
+We first assume that each occurrence of a felony is an independent Bernoulli event with very low probability $p$. The sum of these Bernoulli events is the number of felonies that occur on a given day. This sum follows a binomial distribution where $n$ is the number of opportunities for a felony to occur --- as a rough approximation this might be on the order of the population of NYC ($\sim 8.4$ million). Since $n$ is large enough, we can approximate this binomial distribution with a normal distribution.
 
 We also assume the four assumptions of linear regression:
 \begin{itemize}
@@ -282,13 +282,33 @@ temp_min_degF:any_precip1   0.15666    0.16512   0.949 0.343385
 %Multiple R-squared:  0.5527,	Adjusted R-squared:  0.5388 
 %F-statistic: 39.66 on 11 and 353 DF,  p-value: < 2.2e-16
 
-Temperature, the precipitation indicator, and day-of-week are all significant (removing \texttt{day_of_week} gives a p-value of $3 \times 10^{-6}$ in an extra sum of squares F-test). The holiday indicator, school day indicator, and the interaction between temperature and precipitation are not significant. \todo{Possibly rephrase this paragraph as a summary of results, in terms of the first question of interest. e.g., "after accounting for temp, precip and day of week are significant, but holiday, school day, and interaction aren't (see p-values in the regression summary)."}
+After accounting for temperature, there is convincing evidence that felonies is associated with precipitation. On average there are 21 fewer felonies on days with precipitation that on days without (95\% CI: 4 to 38 fewer felonies; two-sided p-value: 0.014990). The data also provides overwhelming evidence that felonies is associated with day of week (p-value $3 \times 10^{-6}$ from an extra sum of squares F-test) --- compared to Sundays, Fridays have 19 more felonies on average (95\% CI: 8 to 30 more felonies; two-sided p-value: 0.000938), and Saturdays have 14 more felonies on average (95\% CI: 4 to 24 more felonies; two-sided p-value: 0.004940).
+
+After accounting for temperature, the holiday indicator, school day indicator, and the interaction between temperature and precipitation are not significant (two-sided p-values: 0.434865, 0.113258, and 0.343385, respectively).
 
 \subsection{Model Checking and Improvement}
 
 %residual plot - doesn't reveal any significant violations of linearity, constant variance, independence
 %qq plot - residuals aren't normal, but normality isn't a bad approx
-%
+
+To check the validity of our model, we examine a residual plot and Q-Q plot in Figure \ref{fig:lm4ResidualsQQ}. The residual plot doesn't reveal any significant violations of the linearity, constant variance, or independence assumptions \todo{is this correct?}, and the Q-Q plot show the residuals aren't perfectly normal, but that normality isn't a bad approximation.
+
+% two-column figure
+\begin{figure}[!h]
+  \centering
+  \captionsetup{width=0.8\textwidth}
+  \subfloat[Residual plot.]
+  		{\includegraphics[width=0.46\textwidth]
+  		{figures/lm4Residuals.png}\label{fig:lm4Residuals}}
+  \hfill
+  \subfloat[Q-Q plot.]
+  		{\includegraphics[width=0.46\textwidth]
+  		{figures/lm4QQ.png}\label{fig:lm4QQ}}
+  \caption{Residual plot and Q-Q plot for the regression of \texttt{felonies} on \texttt{temp_min_degF}, \texttt{any_precip}, \texttt{is_holiday}, \texttt{is_school_day}, \texttt{day_of_week}, and the interaction between \texttt{temp_min_degF} and \texttt{any_precip}.}
+  \label{fig:lm4ResidualsQQ}
+\end{figure}
+
+
 %CI stats show 17 days with high studentized residuals
 %
 %Look at partial residual plots for the two non-significant variables from lm4.

@@ -206,7 +206,7 @@ lm4 <- lm(formula =
             is_holiday + is_school_day + day_of_week,
           data=reg_dataset)
 summary(lm4)
-
+confint(lm4)
 
 # check the residuals
 temp_plot_data <- reg_dataset %>%
@@ -215,11 +215,19 @@ temp_plot_data <- reg_dataset %>%
          is_resid_outlier=IsOutlier(eval(lm4$residuals)))
 ggplot(temp_plot_data,
        aes(x=fitted, y=resid)) +
-  geom_point() +
+  geom_point(size=0.7) +
   geom_hline(yintercept=0, linetype="dashed") +
   labs(x="Fitted Values", y="Residuals") +
   geom_text_repel(data = filter(temp_plot_data, is_resid_outlier==TRUE), aes(label=format(date, format="%b %d")), size=3.5)
 ggsave(filename="model_felonies_plots/lm4_residuals.png", width=6.125, height=3.5, units="in")
+ggsave(filename="report_writeup/figures/lm4Residuals.png", width=4, height=2, units="in")
+
+# qq plot of the residuals
+ggplot(temp_plot_data, aes(sample=resid)) +
+  geom_qq(size=0.7) +
+  labs(x="Theoretical Quantiles", y="Sample Quantiles")
+ggsave(filename="report_writeup/figures/lm4QQ.png", width=4, height=2, units="in")
+
 
 # check for serial correlation
 ggplot(temp_plot_data,
