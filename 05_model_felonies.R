@@ -244,6 +244,8 @@ lm4_cistat_plot <- PlotCIStats(model = lm4, x_var = reg_dataset$date, label_leve
 ggsave(filename="model_felonies_plots/lm4_caseInfluenceStats.png",
        plot = lm4_cistat_plot, width=10, height=6, units="in")
 # all of the holidays have high leverage, but their studRes and cooksDist are fine
+ggsave(filename="report_writeup/figures/lm4CaseInflenceStats.png", plot = lm4_cistat_plot, width=6, height=4, units="in")
+
 
 # Excl days with problematic studRes or cooksDist
 lm5 <- lm(formula =
@@ -299,14 +301,16 @@ temp_plot_data <- reg_dataset %>%
          preslm4_is_school_day=lm4resid+(as.numeric(as.character(is_school_day))*lm4$coefficients["is_school_day1"][[1]]))
 set.seed(1)
 ggplot(temp_plot_data, aes(x=is_holiday, y=preslm4_is_holiday)) +
-  geom_jitter(size=0.7, width = 0.5, aes(color=factor(problematicObs))) +
-  labs(x="Non-Holiday (0) vs Holiday (1)\n[jittered]", y="Partial Residual\n(felonies, adjusted for all covariates)", color="Promblematic\n Observation")
+  geom_jitter(size=1.2, width = 0.5, aes(color=factor(problematicObs), shape=factor(problematicObs))) +
+  labs(x="Non-Holiday (0) vs Holiday (1)\n[jittered]", y="Partial Residual\n(felonies, adjusted for\nall covariates)", color="Promblematic\n Observation", shape="Promblematic\n Observation")
 ggsave(filename="model_felonies_plots/lm4_pres_isHoliday.png", width=6.125, height=3.5, units="in")
+ggsave(filename="report_writeup/figures/lm4PresIsHoliday.png", width=5, height=2.5, units="in")
 set.seed(1)
 ggplot(temp_plot_data, aes(x=is_school_day, y=preslm4_is_school_day)) +
-  geom_jitter(size=0.7, width = 0.5, aes(color=factor(problematicObs))) +
-  labs(x="Non-School Day (0) vs School Day (1)\n[jittered]", y="Partial Residual\n(felonies, adjusted for all covariates)", color="Promblematic\n Observation")
+  geom_jitter(size=1.2, width = 0.5, aes(color=factor(problematicObs), shape=factor(problematicObs))) +
+  labs(x="Non-School Day (0) vs School Day (1)\n[jittered]", y="Partial Residual\n(felonies, adjusted for\nall covariates)", color="Promblematic\n Observation", shape="Promblematic\n Observation")
 ggsave(filename="model_felonies_plots/lm4_pres_isSchoolDay.png", width=6.125, height=3.5, units="in")
+ggsave(filename="report_writeup/figures/lm4PresIsSchoolDay.png", width=5, height=2.5, units="in")
 rm(temp_plot_data)
 
 

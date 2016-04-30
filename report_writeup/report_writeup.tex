@@ -286,10 +286,7 @@ After accounting for temperature, there is convincing evidence that felonies is 
 
 After accounting for temperature, the holiday indicator, school day indicator, and the interaction between temperature and precipitation are not significant (two-sided p-values: 0.434865, 0.113258, and 0.343385, respectively).
 
-\subsection{Model Checking and Improvement}
-
-%residual plot - doesn't reveal any significant violations of linearity, constant variance, independence
-%qq plot - residuals aren't normal, but normality isn't a bad approx
+\subsection{Model Checking}
 
 To check the validity of our model, we examine a residual plot and Q-Q plot in Figure \ref{fig:lm4ResidualsQQ}. The residual plot doesn't reveal any significant violations of the linearity, constant variance, or independence assumptions \todo{is this correct?}, and the Q-Q plot show the residuals aren't perfectly normal, but that normality isn't a bad approximation.
 
@@ -308,13 +305,31 @@ To check the validity of our model, we examine a residual plot and Q-Q plot in F
   \label{fig:lm4ResidualsQQ}
 \end{figure}
 
+Next, we check for influential observations by examining leverages, studentized residuals, and Cook's distances. From these case influence statistics there are 17 potentially problematic observations. Partial residual plots for \texttt{is_holiday} and \texttt{is_school_day} (two of the non-significant variables from the regression) are shown in Figure \ref{fig:lm4Pres}. If we exclude the 17 potentially problematic observations (coded with blue triangles in Figure \ref{fig:lm4Pres}), it appears as though holidays have fewer felonies than non-holidays, and school days tend to have more felonies than non-school days.
 
-%CI stats show 17 days with high studentized residuals
-%
-%Look at partial residual plots for the two non-significant variables from lm4.
-%
-%After taking everything else into account, it’s clear that holidays have fewer felonies, apart from the Jan. 1 outlier. And there are more felonies on school days, after excluding the problematic obs.
-%
+% two-column figure
+\begin{figure}[!h]
+  \centering
+  \captionsetup{width=0.8\textwidth}
+  \subfloat[]
+  		{\includegraphics[width=0.5\textwidth]
+  		{figures/lm4PresIsHoliday.png}\label{fig:lm4PresIsHoliday}}
+  \hfill
+  \subfloat[]
+  		{\includegraphics[width=0.5\textwidth]
+  		{figures/lm4PresIsSchoolDay.png}\label{fig:lm4PresIsSchoolDay}}
+  \caption{Partial residual plots for \texttt{is_holiday} and \texttt{is_school_day}. In each plot, the 17 potentially problematic observations are coded with blue triangles.}
+  \label{fig:lm4Pres}
+\end{figure}
+
+
+
+\subsection{Model Improvement}
+
+
+
+
+
 %Show the regression coefficients after removing the 17 problematic observations (lm5).
 %
 %If hitting the page limit, probably no need to remove the interaction term (models lm6 and lm7).
