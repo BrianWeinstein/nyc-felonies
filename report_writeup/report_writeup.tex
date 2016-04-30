@@ -172,7 +172,7 @@ In Section \ref{sec:eda} we present some exploratory analysis and plots, in Sect
 \section{Exploratory Analysis and Data Cleaning}
 \label{sec:eda}
 
-We first examine pairwise scatterplots of some of the numeric variables in the raw dataset (\texttt{felonies}, \texttt{temp_min_degF}, \texttt{temp_max_degF}, and \texttt{school_attendance_pct}), as shown in Figure \ref{fig:pairsNumericExclAcc}.
+We first examine pairwise scatterplots of some of the numeric variables in the raw dataset (\texttt{felonies}, \texttt{temp_min_degF}, \texttt{temp_max_degF}, and \texttt{school_attendance_pct}), as shown in Figure \ref{fig:pairsNumericExclAcc}. From this figure we first notice that there are approximately linear relationships between \texttt{felonies} and \texttt{temp_min_degF}, and between \texttt{felonies} and \texttt{temp_max_degF}. There is also strong collinearity between \texttt{temp_min_degF} and \texttt{temp_max_degF} (correlation: 0.969), however, so we remove one of these variables (\texttt{temp_max_degF}) from the covariates that will be used in the regression model.
 
 \begin{figure}[!h]
 	\centering
@@ -182,7 +182,6 @@ We first examine pairwise scatterplots of some of the numeric variables in the r
 	\label{fig:pairsNumericExclAcc}
 \end{figure}
 
-From this figure we first notice that there are approximately linear relationships between \texttt{felonies} and \texttt{temp_min_degF}, and between \texttt{felonies} and \texttt{temp_max_degF}. There is also strong collinearity between \texttt{temp_min_degF} and \texttt{temp_max_degF} (correlation: 0.969), however, so we remove one of these variables (\texttt{temp_max_degF}) from the covariates that will be used in the regression model.
 
 Figure \ref{fig:pairsNumericExclAcc} also shows that there is no linear relationship between \texttt{felonies} and \texttt{school_attendance_pct} (the percent of students present in school on a given day). Any non-school-day has 0\% attendance, so instead of using this as a numeric variable, we convert it to the indicator variable \texttt{is_school_day}, taking value ``1'' if NYC Public Schools were open and in session on the given date (i.e., if \texttt{school_attendance_pct} is $>0$), or value ``0'' otherwise.
 
@@ -202,7 +201,7 @@ In this section we use simple and multiple linear regression to model the number
 
 \subsection{Assumptions}
 
-We first assume that each occurrence of a felony is an independent Bernoulli event with very low probability $p$. The sum of these Bernoulli events is the number of felonies that occurs on a given day. It follows a binomial distribution where $n$ is the number of opportunities for a felony to occur --- as a rough approximation this might be on the order of the population of NYC ($\sim 8.4$ million). Since $n$ is large enough, we can approximate this binomial distribution with a normal distribution.
+We first assume that each occurrence of a felony is an independent Bernoulli event with very low probability $p$. The sum of these Bernoulli events is the number of felonies that occur on a given day. It follows a binomial distribution where $n$ is the number of opportunities for a felony to occur --- as a rough approximation this might be on the order of the population of NYC ($\sim 8.4$ million). Since $n$ is large enough, we can approximate this binomial distribution with a normal distribution.
 
 We also assume the four assumptions of linear regression:
 \begin{itemize}
@@ -217,7 +216,7 @@ We also assume the four assumptions of linear regression:
 
 \subsection{Exploratory Models}
 
-As an exploratory step, we initially perform a simple linear regression of felonies on temperature. The regression coefficients, standard errors, and p-values are shown below:
+As an exploratory step, we initially perform a simple linear regression of felonies on temperature. The regression coefficients, standard errors, and p-values are shown below: \todo{Might not even need to show these here, as long as I keep the summary in the next paragraph.}
 
 \begin{codeSmall}
                Estimate Std. Error t value Pr(>|t|)    
