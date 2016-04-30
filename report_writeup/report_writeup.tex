@@ -294,11 +294,11 @@ To check the validity of our model, we examine a residual plot and Q-Q plot in F
 \begin{figure}[!h]
   \centering
   \captionsetup{width=0.8\textwidth}
-  \subfloat[Residual plot.]
+  \subfloat%[Residual plot.]
   		{\includegraphics[width=0.46\textwidth]
   		{figures/lm4Residuals.png}\label{fig:lm4Residuals}}
   \hfill
-  \subfloat[Q-Q plot.]
+  \subfloat%[Q-Q plot.]
   		{\includegraphics[width=0.46\textwidth]
   		{figures/lm4QQ.png}\label{fig:lm4QQ}}
   \caption{Residual plot and Q-Q plot for the regression of \texttt{felonies} on \texttt{temp_min_degF}, \texttt{any_precip}, \texttt{is_holiday}, \texttt{is_school_day}, \texttt{day_of_week}, and the interaction between \texttt{temp_min_degF} and \texttt{any_precip}.}
@@ -311,11 +311,11 @@ Next, we check for influential observations by examining leverages, studentized 
 \begin{figure}[!h]
   \centering
   \captionsetup{width=0.8\textwidth}
-  \subfloat[]
+  \subfloat%[caption text]
   		{\includegraphics[width=0.5\textwidth]
   		{figures/lm4PresIsHoliday.png}\label{fig:lm4PresIsHoliday}}
   \hfill
-  \subfloat[]
+  \subfloat%[caption text]
   		{\includegraphics[width=0.5\textwidth]
   		{figures/lm4PresIsSchoolDay.png}\label{fig:lm4PresIsSchoolDay}}
   \caption{Partial residual plots for \texttt{is_holiday} and \texttt{is_school_day}. In each plot, the 17 potentially problematic observations are coded with blue triangles.}
@@ -326,12 +326,38 @@ Next, we check for influential observations by examining leverages, studentized 
 
 \subsection{Model Improvement}
 
+We re-fit the regression from Section \ref{sec:modelFeloniesMultipleRegression}, but now excluding the 17 potentially problematic observations. The regression coefficients are shown below:
+
+\begin{codeSmall}
+                           Estimate Std. Error t value   Pr(>|t|)    
+(Intercept)               202.29838    4.72876  42.780    < 2e-16 ***
+temp_min_degF               1.47704    0.07321  20.175    < 2e-16 ***
+any_precip1               -20.41161    7.20033  -2.835    0.00486 ** 
+is_holiday1               -13.26886    6.82627  -1.944    0.05275 .  
+is_school_day1              6.69136    3.12660   2.140    0.03306 *  
+day_of_week2                4.01255    4.81800   0.833    0.40553    
+day_of_week3                0.10726    4.73001   0.023    0.98192    
+day_of_week4               -0.18818    4.73899  -0.040    0.96835    
+day_of_week5               -2.77336    4.80166  -0.578    0.56393    
+day_of_week6               22.99155    4.79145   4.798 0.00000241 ***
+day_of_week7               19.50039    4.21983   4.621 0.00000545 ***
+temp_min_degF:any_precip1   0.13801    0.13747   1.004    0.31615    
+\end{codeSmall}
+
+%Residual standard error: 20.85 on 336 degrees of freedom
+%Multiple R-squared:  0.6773,	Adjusted R-squared:  0.6667 
+%F-statistic:  64.1 on 11 and 336 DF,  p-value: < 2.2e-16
+
+
+After removing the 17 problematic observations, the holiday indicator and school day indicator are now significant. The interaction between temperature and precipitation isn't significant in this model. \todo{Possibly include inferences here. Otherwise, include them in the Conclusion section.}
 
 
 
 
-%Show the regression coefficients after removing the 17 problematic observations (lm5).
-%
+
+
+
+
 %If hitting the page limit, probably no need to remove the interaction term (models lm6 and lm7).
 
 

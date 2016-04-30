@@ -254,6 +254,7 @@ lm5 <- lm(formula =
           data=reg_dataset,
           subset = abs(studres(lm4)) < 2 & cooks.distance(lm4) < 1)
 summary(lm5)
+confint(lm5)
 
 # is_holiday and is_school_day are now significant
 
