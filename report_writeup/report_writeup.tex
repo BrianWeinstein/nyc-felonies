@@ -92,12 +92,12 @@ In this paper, we use the newly-released data to examine the association between
 
 In this paper we study three main questions of interest:
 
-\begin{itemize}
+\begin{enumerate}
 \setlength\itemsep{-1pt}
 \item Are felonies associated with temperature? After taking temperature into account, is felonies associated with precipitation, school days, holidays, and day of week?
 \item Although there’s no causal relationship, for a given set of these conditions, how many felonies can the NYPD reasonably expect?
 \item Are changes in the number of felonies, as compared to the previous day, associated with large ($>8 \degf$) increases in temperature?
-\end{itemize}
+\end{enumerate}
 
 
 
@@ -184,6 +184,28 @@ Faceted boxplots of the categorical variables are shown in Figure \ref{fig:facet
 	\label{fig:facetCategorical}
 \end{figure}
 
+\section{Modeling the Number of Felonies per Day}
+
+In this section we explore the first and second questions of interest.
+
+\subsection{Assumptions}
+
+We first assume that each occurrence of a felony is an independent Bernoulli event with very low probability $p$. The sum of these Bernoulli events is the number of felonies that occurs on a given day. It follows a binomial distribution where $n$ is the number of opportunities for a felony to occur --- as a rough approximation this might be on the order of the population of NYC ($\sim 8.4$ million). Since $n$ is large enough, we can approximate this binomial distribution with a normal distribution.
+
+We also assume the four assumptions of linear regression:
+\begin{itemize}
+\setlength\itemsep{-1pt}
+
+\item Linearity: \texttt{felonies} can be expressed as linear combination of the independent variables
+\item Homoscedasticity (constant variance): $\text{Var}(Y|X_1,\ldots, X_p)$ is the same at all values of $X_1,\ldots, X_p$
+\item Normality: residuals of the fit are normally distributed
+\item Independence: residuals of the fit are independent
+\end{itemize}
+
+
+
+
+
 
 
 
@@ -193,22 +215,13 @@ Faceted boxplots of the categorical variables are shown in Figure \ref{fig:facet
 \label{sec:linearRegressionModelAndAssumptions}
 % discuss the statistical model employed and assumptions
 
-
 \subsection{Statistical Analysis}
 \label{sec:statisticalAnalysisAndInference}
-
-
-
-
 
 
 \section{Model Checking and Improvement}
 \label{sec:modelChecking}
 % discuss model checking and model improvement if the originally proposed model is not appropriate
-
-
-
-
 
 \section{Conclusion}
 \label{sec:conclusion}
