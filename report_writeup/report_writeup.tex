@@ -10,6 +10,7 @@
 \usepackage[lmargin=1.in,rmargin=1.in,tmargin=1.in,bmargin=1in]{geometry}
 \usepackage{setspace} %\doublespacing
 \usepackage[pdftex]{graphicx}
+\usepackage{subfig}
 \usepackage{latexsym}
 \usepackage{amsfonts}
 \usepackage{amsmath,revsymb,graphicx} 
@@ -36,6 +37,15 @@
 %\usepackage{enumitem} \setlist{nosep}
 
 
+\usepackage{xcolor}
+\usepackage{adjustbox}
+\usepackage{verbatim}
+\definecolor{shadecolor}{rgb}{.9, .9, .9}
+\newenvironment{codeSmall}%
+   {\par\noindent\adjustbox{margin=1ex,bgcolor=shadecolor,margin=0ex \medskipamount}\bgroup\minipage\linewidth\verbatim\footnotesize}%
+   {\endverbatim\endminipage\egroup}
+
+
 \newcommand{\degf}{^\circ\text{F}}
 
 
@@ -55,13 +65,15 @@
 \begin{abstract}
 \singlespacing
 
+\todo{UPDATE THE ABSTRACT}
+
 \noindent \textbf{Background:} The New York City Police Department recently released incident-level felony data to the New York City Open Data portal. The dataset includes timestamped information for all felonies committed in NYC.
 
-We first examine the association between the daily number of felonies committed in NYC in 2015 and temperature, presence of precipitation, day of week, federal and New York holidays, and school days. Second, we examine the association between large increases in temperature ($>8 \degf$ from the previous day) and increases in the number of felonies.
+We first examine the association between the daily number of felonies committed in NYC in 2015 and temperature, presence of precipitation, day of week, federal and New York holidays, and school days. Second, we examine the association between changes in the number of felonies (as compared to the previous day) and large increases in temperature ($>8 \degf$ from the previous day).
 
-\noindent \textbf{Methods and Results:} We initially test for a difference between the number of felonies on warmer and cooler days ($\geq 51.98 \degf$ and $< 51.98 \degf$, respectively --- the NYC 2015 median), finding overwhelming evidence of a difference, with there being 44 more felonies, on average, on warmer days than on cooler day (95\% CI 38 to 51 felonies; two sided p-value $<0.000001$ from a two-sample t-test).
+\noindent \textbf{Methods and Results:} We initially test for a difference between the number of felonies on warmer and cooler days ($\geq 51.98 \degf$ and $< 51.98 \degf$, respectively --- the NYC 2015 median), finding overwhelming evidence of a difference, with there being 44 more felonies, on average, on warmer days than on cooler day (95\% CI 38 to 51 felonies; two sided p-value $<0.000001$ from a two-sample t-test). \todo{Remove this.}
 
-After accounting for presence of precipitation, holidays, school days, and day of week, the data provides overwhelming evidence that for every $1 \degf$ increase in temperature there are, on average, 1.4 additional felonies per day (95\% CI 1.3 to 1.6 felonies; two-sided p-value $<0.000001$ for a test that the linear regression coefficient is 0).
+After accounting for presence of precipitation, holidays, school days, and day of week, the data provides overwhelming evidence that for every $1 \degf$ increase in temperature there are, on average, 1.4 additional felonies per day (95\% CI 1.3 to 1.6 felonies; two-sided p-value $<0.000001$ for a test that the linear regression coefficient is 0). \todo{Explain that the results change after removing observations with large studentized residuals.}
 
 We next find that, after accounting for day of week, there is little evidence to suggest that increases in felonies from the previous day are associated with large increases in temperature (two-sided p-value 0.1001 for a test that the linear regression coefficient is 0).
 
@@ -184,9 +196,9 @@ Faceted boxplots of the categorical variables are shown in Figure \ref{fig:facet
 	\label{fig:facetCategorical}
 \end{figure}
 
-\section{Modeling the Number of Felonies per Day}
+\section{Modeling the Number of Felonies Per Day}
 
-In this section we explore the first and second questions of interest.
+In this section we use simple and multiple linear regression to model the number of felonies per day (the first and second questions of interest).
 
 \subsection{Assumptions}
 
@@ -203,25 +215,108 @@ We also assume the four assumptions of linear regression:
 \end{itemize}
 
 
+\subsection{Exploratory Models}
 
+As an exploratory step, we initially perform a simple linear regression of felonies on temperature. The regression coefficients, standard errors, and p-values are shown below:
 
+\begin{codeSmall}
+               Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   213.11913    4.07082   52.35   <2e-16 ***
+temp_min_degF   1.38097    0.07709   17.91   <2e-16 ***
+\end{codeSmall}
 
+%Residual standard error: 27.48 on 363 degrees of freedom
+%Multiple R-squared:  0.4692,	Adjusted R-squared:  0.4678 
+%F-statistic: 320.9 on 1 and 363 DF,  p-value: < 2.2e-16
 
+There is overwhelming evidence of an association between felonies and temperature. For every 1 $\degf$ increase in temperature, there are 1.38 additional felonies per day (95\% CI 1.22938 to 1.532569, two sided p-value $<2\times10^{-16}$ for a test that the coefficient is 0).
 
+What's most interesting here, however, are the observations with high residuals, as shown in the residual plot in Figure \ref{fig:lm1Residuals}. Some days with large residuals aren't modeled well by temperature alone --- Jan. 1, 2015, for example, a federal holiday, had many more felonies than expected, given the temperature on that day. Including other covariates in the model, like \texttt{is_holiday} (an indicator as to whether the day is a NY/federal holiday), might help to account for some of this behavior. We next add these additional variables in Section \ref{sec:modelFeloniesMultipleRegression}.
 
-\section{Model Setup and Statistical Analysis}
+\begin{figure}[!h]
+	\centering
+	\captionsetup{width=0.8\textwidth}
+	\includegraphics[width=4.25in]{figures/lm1Residuals.png}
+	\caption{Residual plot for the regression of \texttt{felonies} on \texttt{temp_min_degF}.}
+	\label{fig:lm1Residuals}
+\end{figure}
 
-\subsection{Model Setup and Assumptions}
-\label{sec:linearRegressionModelAndAssumptions}
-% discuss the statistical model employed and assumptions
+%% two-column figure
+%\begin{figure}[!h]
+%  \centering
+%  \captionsetup{width=0.8\textwidth}
+%  \subfloat[Residual plot.]
+%  		{\includegraphics[width=0.46\textwidth]
+%  		{figures/lm1Residuals.png}\label{fig:lm1Residuals}}
+%  \hfill
+%  \subfloat[Q-Q plot.]
+%  		{\includegraphics[width=0.46\textwidth]
+%  		{figures/lm1QQ.png}\label{fig:f2}}
+%  \caption{Residual plot and Q-Q plot for the regression of \texttt{felonies} on \texttt{temp_min_degF}.}
+%\end{figure}
+
+There are some potentially problematic observations with high leverage or large studentized residuals, but there was no change in interpretation after removing these observations from the dataset. Also note that we tested higher order terms of \texttt{temp_min_degF} in a multiple regression, but only the first-order term was significant.
+
 
 \subsection{Statistical Analysis}
-\label{sec:statisticalAnalysisAndInference}
+\label{sec:modelFeloniesMultipleRegression}
+
+We next incorporate additional covariates, performing a multiple linear regression of felonies on the variables shown in the regression summary below:
+
+\begin{codeSmall}
+                           Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               210.71208    5.66649  37.186  < 2e-16 ***
+temp_min_degF               1.38099    0.08768  15.750  < 2e-16 ***
+any_precip1               -21.01037    8.59459  -2.445 0.014990 *  
+is_holiday1                -6.00627    7.68276  -0.782 0.434865    
+is_school_day1              5.94836    3.74662   1.588 0.113258    
+day_of_week2                0.06874    5.73913   0.012 0.990450    
+day_of_week3               -3.29691    5.70419  -0.578 0.563647    
+day_of_week4               -3.46950    5.71773  -0.607 0.544376    
+day_of_week5               -0.17653    5.68349  -0.031 0.975239    
+day_of_week6               19.01055    5.69764   3.337 0.000938 ***
+day_of_week7               14.21319    5.02454   2.829 0.004940 ** 
+temp_min_degF:any_precip1   0.15666    0.16512   0.949 0.343385    
+\end{codeSmall}
+
+%Residual standard error: 25.58 on 353 degrees of freedom
+%Multiple R-squared:  0.5527,	Adjusted R-squared:  0.5388 
+%F-statistic: 39.66 on 11 and 353 DF,  p-value: < 2.2e-16
+
+Temperature, the precipitation indicator, and day-of-week are all significant (removing \texttt{day_of_week} gives a p-value of $3 \times 10^{-6}$ in an extra sum of squares F-test). The holiday indicator, school day indicator, and the interaction between temperature and precipitation are not significant. \todo{Possibly rephrase this paragraph as a summary of results, in terms of the first question of interest. e.g., "after accounting for temp, precip and day of week are significant, but holiday, school day, and interaction aren't (see p-values in the regression summary)."}
+
+\subsection{Model Checking and Improvement}
+
+%residual plot
+%qq plot
+%
+%CI stats show 17 days with high studentized residuals
+%
+%Look at partial residual plots for the two non-significant variables from lm4.
+%
+%After taking everything else into account, it’s clear that holidays have fewer felonies, apart from the Jan. 1 outlier. And there are more felonies on school days, after excluding the problematic obs.
+%
+%Show the regression coefficients after removing the 17 problematic observations (lm5).
+%
+%If hitting the page limit, probably no need to remove the interaction term (models lm6 and lm7).
 
 
-\section{Model Checking and Improvement}
-\label{sec:modelChecking}
-% discuss model checking and model improvement if the originally proposed model is not appropriate
+
+
+\section{Modeling the Day-to-Day Change in the Number of Felonies Per Day}
+
+\subsection{Assumptions}
+
+\subsection{Statistical Analysis}
+
+\subsection{Model Checking and Improvement}
+
+
+
+
+
+
+
 
 \section{Conclusion}
 \label{sec:conclusion}

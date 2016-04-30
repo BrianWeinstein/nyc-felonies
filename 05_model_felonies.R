@@ -161,6 +161,14 @@ ggplot(temp_plot_data,
   labs(x="Fitted Values", y="Residuals") +
   geom_text_repel(data = filter(temp_plot_data, is_resid_outlier==TRUE), aes(label=format(date, format="%b %d")), size=3.5)
 ggsave(filename="model_felonies_plots/lm1_residuals.png", width=6.125, height=3.5, units="in")
+ggsave(filename="report_writeup/figures/lm1Residuals.png", width=6.125, height=2.5, units="in")
+
+# qq plot of the residuals
+ggplot(temp_plot_data, aes(sample=resid)) +
+  geom_qq() +
+  labs(x="Theoretical Quantiles", y="Sample Quantiles")
+ggsave(filename="report_writeup/figures/lm1QQ.png", width=6.125, height=2.5, units="in")
+
 
 # check for serial correlation
 ggplot(temp_plot_data,
