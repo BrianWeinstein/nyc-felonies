@@ -215,11 +215,11 @@ We also assume the four assumptions of linear regression:
 As an exploratory step, we initially perform a simple linear regression of felonies on temperature. The regression coefficients, standard errors, and p-values are shown below:
 
 % lm1
-\begin{codeSmall}
-               Estimate Std. Error t value Pr(>|t|)    
-(Intercept)   213.11913    4.07082   52.35   <2e-16 ***
-temp_min_degF   1.38097    0.07709   17.91   <2e-16 ***
-\end{codeSmall}
+%\begin{codeSmall}
+%               Estimate Std. Error t value Pr(>|t|)    
+%(Intercept)   213.11913    4.07082   52.35   <2e-16 ***
+%temp_min_degF   1.38097    0.07709   17.91   <2e-16 ***
+%\end{codeSmall}
 
 % lm1
 % xtable(as.data.frame(summary(lm1)$coefficients), digits=c(100, 2, 2, 2, 4), display=c("s", "f", "f", "f", "g"))
@@ -264,21 +264,21 @@ We next incorporate additional covariates, performing a multiple linear regressi
 
 
 % lm4
-\begin{codeSmall}
-                           Estimate Std. Error t value Pr(>|t|)    
-(Intercept)               210.71208    5.66649  37.186  < 2e-16 ***
-temp_min_degF               1.38099    0.08768  15.750  < 2e-16 ***
-any_precip1               -21.01037    8.59459  -2.445 0.014990 *  
-is_holiday1                -6.00627    7.68276  -0.782 0.434865    
-is_school_day1              5.94836    3.74662   1.588 0.113258    
-day_of_week2                0.06874    5.73913   0.012 0.990450    
-day_of_week3               -3.29691    5.70419  -0.578 0.563647    
-day_of_week4               -3.46950    5.71773  -0.607 0.544376    
-day_of_week5               -0.17653    5.68349  -0.031 0.975239    
-day_of_week6               19.01055    5.69764   3.337 0.000938 ***
-day_of_week7               14.21319    5.02454   2.829 0.004940 ** 
-temp_min_degF:any_precip1   0.15666    0.16512   0.949 0.343385    
-\end{codeSmall}
+%\begin{codeSmall}
+%                           Estimate Std. Error t value Pr(>|t|)    
+%(Intercept)               210.71208    5.66649  37.186  < 2e-16 ***
+%temp_min_degF               1.38099    0.08768  15.750  < 2e-16 ***
+%any_precip1               -21.01037    8.59459  -2.445 0.014990 *  
+%is_holiday1                -6.00627    7.68276  -0.782 0.434865    
+%is_school_day1              5.94836    3.74662   1.588 0.113258    
+%day_of_week2                0.06874    5.73913   0.012 0.990450    
+%day_of_week3               -3.29691    5.70419  -0.578 0.563647    
+%day_of_week4               -3.46950    5.71773  -0.607 0.544376    
+%day_of_week5               -0.17653    5.68349  -0.031 0.975239    
+%day_of_week6               19.01055    5.69764   3.337 0.000938 ***
+%day_of_week7               14.21319    5.02454   2.829 0.004940 ** 
+%temp_min_degF:any_precip1   0.15666    0.16512   0.949 0.343385    
+%\end{codeSmall}
 
 
 % lm4
@@ -363,21 +363,21 @@ Next, we check for influential observations by examining leverages, studentized 
 We re-fit the regression from Section \ref{sec:modelFeloniesMultipleRegression}, but now excluding the 17 potentially problematic observations. The regression coefficients are shown below:
 
 % lm5
-\begin{codeSmall}
-                           Estimate Std. Error t value   Pr(>|t|)    
-(Intercept)               202.29838    4.72876  42.780    < 2e-16 ***
-temp_min_degF               1.47704    0.07321  20.175    < 2e-16 ***
-any_precip1               -20.41161    7.20033  -2.835    0.00486 ** 
-is_holiday1               -13.26886    6.82627  -1.944    0.05275 .  
-is_school_day1              6.69136    3.12660   2.140    0.03306 *  
-day_of_week2                4.01255    4.81800   0.833    0.40553    
-day_of_week3                0.10726    4.73001   0.023    0.98192    
-day_of_week4               -0.18818    4.73899  -0.040    0.96835    
-day_of_week5               -2.77336    4.80166  -0.578    0.56393    
-day_of_week6               22.99155    4.79145   4.798 0.00000241 ***
-day_of_week7               19.50039    4.21983   4.621 0.00000545 ***
-temp_min_degF:any_precip1   0.13801    0.13747   1.004    0.31615    
-\end{codeSmall}
+%\begin{codeSmall}
+%                           Estimate Std. Error t value   Pr(>|t|)    
+%(Intercept)               202.29838    4.72876  42.780    < 2e-16 ***
+%temp_min_degF               1.47704    0.07321  20.175    < 2e-16 ***
+%any_precip1               -20.41161    7.20033  -2.835    0.00486 ** 
+%is_holiday1               -13.26886    6.82627  -1.944    0.05275 .  
+%is_school_day1              6.69136    3.12660   2.140    0.03306 *  
+%day_of_week2                4.01255    4.81800   0.833    0.40553    
+%day_of_week3                0.10726    4.73001   0.023    0.98192    
+%day_of_week4               -0.18818    4.73899  -0.040    0.96835    
+%day_of_week5               -2.77336    4.80166  -0.578    0.56393    
+%day_of_week6               22.99155    4.79145   4.798 0.00000241 ***
+%day_of_week7               19.50039    4.21983   4.621 0.00000545 ***
+%temp_min_degF:any_precip1   0.13801    0.13747   1.004    0.31615    
+%\end{codeSmall}
 
 
 % lm5
@@ -443,22 +443,22 @@ In this section we use multiple linear regression to model \texttt{felonies_diff
 We now perform a multiple linear regression of \texttt{felonies_diff} on the variables shown in the regression summary below:
 
 % lmd2
-\begin{codeSmall}
-                          Estimate Std. Error t value Pr(>|t|)    
-(Intercept)              -19.09877    6.66217  -2.867 0.004397 ** 
-temp_jump1                21.73759   16.38144   1.327 0.185381    
-temp_min_degF              0.12321    0.09743   1.265 0.206821    
-any_precip1               -1.90533    3.72032  -0.512 0.608873    
-is_holiday1                0.95049    9.39575   0.101 0.919480    
-is_school_day1             6.95124    4.60154   1.511 0.131779    
-day_of_week2              12.22189    6.99960   1.746 0.081669 .  
-day_of_week3               2.91295    6.97539   0.418 0.676491    
-day_of_week4              11.05330    6.99797   1.580 0.115120    
-day_of_week5               9.94665    6.94328   1.433 0.152872    
-day_of_week6              25.59847    6.96531   3.675 0.000275 ***
-day_of_week7               1.79654    6.14494   0.292 0.770183    
-temp_jump1:temp_min_degF  -0.28253    0.34895  -0.810 0.418679    
-\end{codeSmall}
+%\begin{codeSmall}
+%                          Estimate Std. Error t value Pr(>|t|)    
+%(Intercept)              -19.09877    6.66217  -2.867 0.004397 ** 
+%temp_jump1                21.73759   16.38144   1.327 0.185381    
+%temp_min_degF              0.12321    0.09743   1.265 0.206821    
+%any_precip1               -1.90533    3.72032  -0.512 0.608873    
+%is_holiday1                0.95049    9.39575   0.101 0.919480    
+%is_school_day1             6.95124    4.60154   1.511 0.131779    
+%day_of_week2              12.22189    6.99960   1.746 0.081669 .  
+%day_of_week3               2.91295    6.97539   0.418 0.676491    
+%day_of_week4              11.05330    6.99797   1.580 0.115120    
+%day_of_week5               9.94665    6.94328   1.433 0.152872    
+%day_of_week6              25.59847    6.96531   3.675 0.000275 ***
+%day_of_week7               1.79654    6.14494   0.292 0.770183    
+%temp_jump1:temp_min_degF  -0.28253    0.34895  -0.810 0.418679    
+%\end{codeSmall}
 
 
 
@@ -510,18 +510,18 @@ Neither a residual plot nor a Q-Q plot (not shown) reveal any significant violat
 
 To simplify the model, we now iteratively remove the non-significant variables from the regression, and end up with a model in which only \texttt{temp_jump} and \texttt{day_of_week} are remaining. The regression summary is shown below:
 
-\begin{codeSmall}
-             Estimate Std. Error t value Pr(>|t|)    
-             Estimate Std. Error t value Pr(>|t|)    
-(Intercept)   -13.338      4.383  -3.043  0.00252 ** 
-temp_jump1      8.942      5.423   1.649  0.10006    
-day_of_week2   16.480      6.113   2.696  0.00736 ** 
-day_of_week3    6.999      6.113   1.145  0.25305    
-day_of_week4   16.152      6.116   2.641  0.00863 ** 
-day_of_week5   14.496      6.085   2.382  0.01773 *  
-day_of_week6   30.208      6.121   4.936 1.23e-06 ***
-day_of_week7    1.746      6.127   0.285  0.77589    
-\end{codeSmall}
+%\begin{codeSmall}
+%             Estimate Std. Error t value Pr(>|t|)    
+%             Estimate Std. Error t value Pr(>|t|)    
+%(Intercept)   -13.338      4.383  -3.043  0.00252 ** 
+%temp_jump1      8.942      5.423   1.649  0.10006    
+%day_of_week2   16.480      6.113   2.696  0.00736 ** 
+%day_of_week3    6.999      6.113   1.145  0.25305    
+%day_of_week4   16.152      6.116   2.641  0.00863 ** 
+%day_of_week5   14.496      6.085   2.382  0.01773 *  
+%day_of_week6   30.208      6.121   4.936 1.23e-06 ***
+%day_of_week7    1.746      6.127   0.285  0.77589    
+%\end{codeSmall}
 
 
 % lmd6
