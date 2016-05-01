@@ -171,6 +171,7 @@ We first examine pairwise scatterplots of some of the numeric variables in the r
 	\centering
 	\captionsetup{width=0.9\textwidth}
 	\includegraphics[width=6in]{figures/pairsNumericExclAcc.png}
+	\vspace*{-3mm}
 	\caption{Pairwise scatterplots of some of the numeric variables in the raw dataset.}
 	\label{fig:pairsNumericExclAcc}
 \end{figure}
@@ -184,6 +185,7 @@ Faceted boxplots of the categorical variables are shown in Figure \ref{fig:facet
 	\centering
 	\captionsetup{width=0.9\textwidth}
 	\includegraphics[width=6in]{figures/facetCategorical.png}
+	\vspace*{-5mm}
 	\caption{Faceted boxplots of the categorical variables in the dataset.}
 	\label{fig:facetCategorical}
 \end{figure}
@@ -236,9 +238,9 @@ As an exploratory step, we initially perform a simple linear regression of felon
   temp\_min\_degF & 1.38 & 0.08 & 17.91 & $<2 \times 10^{-16}$ \\ 
    \hline
 \end{tabular}
-\captionsetup{width=0.8\textwidth}
+\captionsetup{width=0.9\textwidth}
 \vspace*{-2mm}
-\caption{Coefficients, standard errors, and p-values from the regression of felonies on temperature.}
+\caption{Regression summary from the simple linear regression of \texttt{felonies}.}
 \label{tab:lm1}   
 \vspace*{-3mm}
 \end{table}
@@ -254,8 +256,9 @@ What's most interesting here, however, are the observations with high residuals,
 
 \begin{figure}[!h]
 	\centering
-	\captionsetup{width=0.8\textwidth}
+	\captionsetup{width=0.9\textwidth}
 	\includegraphics[width=4.25in]{figures/lm1Residuals.png}
+	\vspace*{-3mm}
 	\caption{Residual plot for the regression of \texttt{felonies} on \texttt{temp_min_degF}.}
 	\label{fig:lm1Residuals}
 \end{figure}
@@ -267,7 +270,7 @@ There are some potentially problematic observations with high leverage or large 
 \subsection{Statistical Analysis}
 \label{sec:modelFeloniesMultipleRegression}
 
-We next incorporate additional covariates, performing a multiple linear regression of felonies on the variables shown in the regression summary in Table \ref{tab:lm4}. \todo{update caption}
+We next incorporate additional covariates, performing a multiple linear regression of felonies on the variables shown in the regression summary in Table \ref{tab:lm4}.
 
 
 % lm4
@@ -312,12 +315,13 @@ We next incorporate additional covariates, performing a multiple linear regressi
   temp\_min\_degF:any\_precip1 & 0.16 & 0.17 & 0.95 & 0.3434 \\ 
    \hline
 \end{tabular}
-\captionsetup{width=0.8\textwidth}
+\captionsetup{width=0.9\textwidth}
 \vspace*{-2mm}
-\caption{Coefficients, standard errors, and p-values from the regression of felonies on temperature.}
+\caption{Regression summary from the multiple linear regression of \texttt{felonies}.}
 \label{tab:lm4}   
 \vspace*{-3mm}
 \end{table}
+
 
 
 %Residual standard error: 25.58 on 353 degrees of freedom
@@ -340,7 +344,7 @@ To check the validity of our model, we examine a residual plot and Q-Q plot in F
 % two-column figure
 \begin{figure}[!h]
   \centering
-  \captionsetup{width=0.8\textwidth}
+  \captionsetup{width=0.9\textwidth}
   \subfloat%[Residual plot.]
   		{\includegraphics[width=0.46\textwidth]
   		{figures/lm4Residuals.png}\label{fig:lm4Residuals}}
@@ -348,16 +352,17 @@ To check the validity of our model, we examine a residual plot and Q-Q plot in F
   \subfloat%[Q-Q plot.]
   		{\includegraphics[width=0.46\textwidth]
   		{figures/lm4QQ.png}\label{fig:lm4QQ}}
+  \vspace*{-3mm}
   \caption{Residual plot and Q-Q plot for the regression of \texttt{felonies} on \texttt{temp_min_degF}, \texttt{any_precip}, \texttt{is_holiday}, \texttt{is_school_day}, \texttt{day_of_week}, and the interaction between \texttt{temp_min_degF} and \texttt{any_precip}.}
   \label{fig:lm4ResidualsQQ}
 \end{figure}
 
-Next, we check for influential observations by examining leverages, studentized residuals, and Cook's distances. From these case influence statistics there are 17 potentially problematic observations. Partial residual plots for \texttt{is_holiday} and \texttt{is_school_day} (two of the non-significant variables from the regression) are shown in Figure \ref{fig:lm4Pres}. If we ignore the 17 potentially problematic observations (coded with blue triangles in Figure \ref{fig:lm4Pres}), it appears as though holidays have fewer felonies than non-holidays, and school days tend to have more felonies than non-school days.
+Next, we check for influential observations by examining leverages, studentized residuals, and Cook's distances. From these case influence statistics there are 17 potentially problematic observations. Partial residual plots for \texttt{is_holiday} and \texttt{is_school_day} (two of the insignificant variables from the regression) are shown in Figure \ref{fig:lm4Pres}. If we ignore the 17 potentially problematic observations (coded with blue triangles in Figure \ref{fig:lm4Pres}), it appears as though holidays have fewer felonies than non-holidays, and school days tend to have more felonies than non-school days.
 
 % two-column figure
 \begin{figure}[!h]
   \centering
-  \captionsetup{width=0.8\textwidth}
+  \captionsetup{width=0.9\textwidth}
   \subfloat%[caption text]
   		{\includegraphics[width=0.5\textwidth]
   		{figures/lm4PresIsHoliday.png}\label{fig:lm4PresIsHoliday}}
@@ -365,6 +370,7 @@ Next, we check for influential observations by examining leverages, studentized 
   \subfloat%[caption text]
   		{\includegraphics[width=0.5\textwidth]
   		{figures/lm4PresIsSchoolDay.png}\label{fig:lm4PresIsSchoolDay}}
+  \vspace*{-3mm}
   \caption{Partial residual plots for \texttt{is_holiday} and \texttt{is_school_day}. In each plot, the 17 potentially problematic observations are coded with blue triangles.}
   \label{fig:lm4Pres}
 \end{figure}
@@ -372,7 +378,7 @@ Next, we check for influential observations by examining leverages, studentized 
 
 
 
-We re-fit the regression from Section \ref{sec:modelFeloniesMultipleRegression}, but now excluding the 17 potentially problematic observations. The regression summary is shown in Table \ref{tab:lm5}. \todo{update the caption}
+We re-fit the regression from Section \ref{sec:modelFeloniesMultipleRegression}, but now excluding the 17 potentially problematic observations. The regression summary is shown in Table \ref{tab:lm5}.
 
 % lm5
 %\begin{codeSmall}
@@ -416,9 +422,9 @@ We re-fit the regression from Section \ref{sec:modelFeloniesMultipleRegression},
   temp\_min\_degF:any\_precip1 & 0.14 & 0.14 & 1.00 & 0.3161 \\ 
    \hline
 \end{tabular}
-\captionsetup{width=0.8\textwidth}
+\captionsetup{width=0.9\textwidth}
 \vspace*{-2mm}
-\caption{Coefficients, standard errors, and p-values from the regression of felonies on temperature.}
+\caption{Regression summary from the multiple linear regression of \texttt{felonies}, after excluding 17 problematic observations.}
 \label{tab:lm5}   
 \vspace*{-3mm}
 \end{table}
@@ -457,7 +463,7 @@ In this section we use multiple linear regression to model \texttt{felonies_diff
 \label{sec:modelFeloniesDiffMultipleRegression}
 
 
-We now perform a multiple linear regression of \texttt{felonies_diff} on the variables shown in the regression summary in Table \ref{tab:lmd2}. \todo{update the caption}
+We now perform a multiple linear regression of \texttt{felonies_diff} on the variables shown in the regression summary in Table \ref{tab:lmd2}.
 
 % lmd2
 %\begin{codeSmall}
@@ -504,9 +510,9 @@ We now perform a multiple linear regression of \texttt{felonies_diff} on the var
   temp\_jump1:temp\_min\_degF & -0.28 & 0.35 & -0.81 & 0.4187 \\ 
    \hline
 \end{tabular}
-\captionsetup{width=0.8\textwidth}
+\captionsetup{width=0.9\textwidth}
 \vspace*{-2mm}
-\caption{Coefficients, standard errors, and p-values from the regression of felonies on temperature.}
+\caption{Regression summary from the multiple linear regression of \texttt{felonies_diff}.}
 \label{tab:lmd2}   
 \vspace*{-3mm}
 \end{table}
@@ -531,7 +537,7 @@ The data provides overwhelming evidence that \texttt{felonies_diff} is associate
 
 Neither a residual plot nor a Q-Q plot (not shown) reveal any significant violations of our assumptions. Case influence statistics reveal 12 potentially influential observations, but there is no change in interpretation once they're removed.
 
-To simplify the model, we now iteratively remove the non-significant variables from the regression, and end up with a model in which only \texttt{temp_jump} and \texttt{day_of_week} are remaining. The regression summary is shown in Table \ref{tab:lmd6}. \todo{update the caption}
+To simplify the model, we now iteratively remove the insignificant variables from the regression, and end up with a model in which only \texttt{temp_jump} and \texttt{day_of_week} are remaining. The regression summary is shown in Table \ref{tab:lmd6}.
 
 % lmd6
 %\begin{codeSmall}
@@ -568,9 +574,9 @@ To simplify the model, we now iteratively remove the non-significant variables f
   day\_of\_week7 & 1.75 & 6.13 & 0.28 & 0.7759 \\ 
    \hline
 \end{tabular}
-\captionsetup{width=0.8\textwidth}
+\captionsetup{width=0.9\textwidth}
 \vspace*{-2mm}
-\caption{Coefficients, standard errors, and p-values from the regression of felonies on temperature.}
+\caption{Regression summary from the multiple linear regression of \texttt{felonies_diff}, after removing the insignificant variables.}
 \label{tab:lmd6}   
 \vspace*{-3mm}
 \end{table}
