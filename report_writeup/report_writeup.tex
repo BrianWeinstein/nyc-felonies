@@ -102,7 +102,9 @@ In this paper, we use the newly-released data to examine the association between
 In this paper we study three main questions of interest:
 
 \begin{enumerate}
-\setlength\itemsep{-1pt}
+\setlength\itemsep{-3pt}
+\vspace*{-3mm}
+
 \item Are felonies associated with temperature? After taking temperature into account, is felonies associated with precipitation, school days, holidays, and day of week?
 \item Although there's no causal relationship, for a given set of these conditions, how many felonies can the NYPD reasonably expect?
 \item After taking into account temperature, precipitation, school days, holidays, and day of week; are the day-to-day changes in the number of felonies associated with large ($>8 \degf$) increases in temperature?
@@ -116,8 +118,9 @@ In this paper we study three main questions of interest:
 The dataset contains 365 observations, one for each date in 2015. The class, description, and source for each variable in the dataset is outlined below. Only those variables used/referenced in the analyses are included here --- redundant and untranformed variables that were removed during exploratory analysis are not described below.
 
 \begin{itemize}
-\setlength\itemsep{-1pt}
-
+\setlength\itemsep{-3pt}
+\vspace*{-3mm}
+	
 \item \texttt{felonies} (integer) is a count of the number of felonies committed on each day in NYC in 2015. The values are derived counts from the ``NYPD 7 Major Felony Incidents'' dataset in the NYC Open Data Portal [\href{https://data.cityofnewyork.us/Public-Safety/NYPD-7-Major-Felony-Incidents/hyij-8hr7}{data.cityofnewyork.us/d/hyij-8hr7}]. The felonies included in the dataset that contribute to the overall daily count are burglary, felony assault, grand larceny, grand larceny of motor vehicle, murder and non-negligent manslaughter, rape, and robbery.
 
 \item \texttt{temp_min_degF} (numeric) is the minimum daily temperature on the given date (in degrees Fahrenheit), as reported by the New York Central Park Belvedere Tower weather station. The data was requested via the National Centers for Environmental Information [\href{http://www.ncdc.noaa.gov/cdo-web/search}{ncdc.noaa.gov/cdo-web/search}].
@@ -201,7 +204,8 @@ We first assume that each occurrence of a felony is an independent Bernoulli eve
 
 We also assume the four assumptions of linear regression:
 \begin{itemize}
-\setlength\itemsep{-1pt}
+\setlength\itemsep{-3pt}
+\vspace*{-3mm}
 
 \item Linearity: \texttt{felonies} can be expressed as linear combination of the independent variables
 \item Homoscedasticity (constant variance): $\text{Var}(Y|X_1,\ldots, X_p)$ is the same at all values of $X_1,\ldots, X_p$
