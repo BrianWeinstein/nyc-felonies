@@ -2,12 +2,13 @@
 
 \documentclass[11pt,notitlepage]{article}
 
+
 %\documentclass[twocolumn,secnumarabic,amssymb, nobibnotes, aps, prd]{revtex4-1}
 %\documentclass[aps,preprint]{revtex4}
 %\documentclass[pra,preprint]{revtex4}
 %\documentclass[pra,twocolumn]{revtex4}
 
-\usepackage[lmargin=1.in,rmargin=1.in,tmargin=1.in,bmargin=1in]{geometry}
+\usepackage[lmargin=1in,rmargin=1in,tmargin=1in,bmargin=1in]{geometry}
 \usepackage{setspace} %\doublespacing
 \usepackage[pdftex]{graphicx}
 \usepackage{subfig}
@@ -63,7 +64,7 @@
 
 
 \begin{abstract}
-\singlespacing
+
 
 \noindent \textbf{Background:} The New York City Police Department recently released incident-level felony data to the New York City Open Data portal. The dataset includes timestamped information for all felonies committed in NYC.
 
@@ -85,10 +86,6 @@ After accounting for day of week, the data provides no evidence that day-to-day 
 \end{abstract}
 
 
-
-\pagebreak
-
-\singlespacing
 
 
 
@@ -174,6 +171,7 @@ We first examine pairwise scatterplots of some of the numeric variables in the r
 	\vspace*{-3mm}
 	\caption{Pairwise scatterplots of some of the numeric variables in the raw dataset.}
 	\label{fig:pairsNumericExclAcc}
+	\vspace*{-3mm}
 \end{figure}
 
 
@@ -188,6 +186,7 @@ Faceted boxplots of the categorical variables are shown in Figure \ref{fig:facet
 	\vspace*{-5mm}
 	\caption{Faceted boxplots of the categorical variables in the dataset.}
 	\label{fig:facetCategorical}
+	\vspace*{-3mm}
 \end{figure}
 
 \section{Modeling the Number of Felonies Per Day}
@@ -261,6 +260,7 @@ What's most interesting here, however, are the observations with high residuals,
 	\vspace*{-3mm}
 	\caption{Residual plot for the regression of \texttt{felonies} on \texttt{temp_min_degF}.}
 	\label{fig:lm1Residuals}
+	\vspace*{-3mm}
 \end{figure}
 
 
@@ -355,6 +355,7 @@ To check the validity of our model, we examine a residual plot and Q-Q plot in F
   \vspace*{-3mm}
   \caption{Residual plot and Q-Q plot for the regression of \texttt{felonies} on \texttt{temp_min_degF}, \texttt{any_precip}, \texttt{is_holiday}, \texttt{is_school_day}, \texttt{day_of_week}, and the interaction between \texttt{temp_min_degF} and \texttt{any_precip}.}
   \label{fig:lm4ResidualsQQ}
+  \vspace*{-3mm}
 \end{figure}
 
 Next, we check for influential observations by examining leverages, studentized residuals, and Cook's distances. From these case influence statistics there are 17 potentially problematic observations. Partial residual plots for \texttt{is_holiday} and \texttt{is_school_day} (two of the insignificant variables from the regression) are shown in Figure \ref{fig:lm4Pres}. If we ignore the 17 potentially problematic observations (coded with blue triangles in Figure \ref{fig:lm4Pres}), it appears as though holidays have fewer felonies than non-holidays, and school days tend to have more felonies than non-school days.
@@ -373,6 +374,7 @@ Next, we check for influential observations by examining leverages, studentized 
   \vspace*{-3mm}
   \caption{Partial residual plots for \texttt{is_holiday} and \texttt{is_school_day}. In each plot, the 17 potentially problematic observations are coded with blue triangles.}
   \label{fig:lm4Pres}
+  \vspace*{-3mm}
 \end{figure}
 
 
@@ -444,7 +446,7 @@ After removing the 17 problematic observations, the holiday indicator and school
 
 
 
-\section{Modeling the Day-to-Day Change in the Number of Felonies Per Day}
+\section{Modeling the Day-to-Day Change in the Number of Felonies}
 \label{sec:modelingFeloniesDiff}
 
 
