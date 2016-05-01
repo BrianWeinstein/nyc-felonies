@@ -142,24 +142,11 @@ The class, description, and source for each variable in the dataset is outlined 
 
 \item \texttt{temp_min_degF_diff} (numeric) indicates for a given date the difference in \texttt{temp_min_degF} as compared to the previous day. On Jan. 3, 2015, for example, \texttt{temp_min_degF_diff} = -1.98, since the daily minimum temperature (\texttt{temp_min_degF}) was $1.98 \degf$ lower on Jan. 3 than on Jan. 2.
 
-\item \texttt{temp_jump} (factor) is an indicator variable, taking value ``1'' if \texttt{temp_min_degF_diff} $> 8$, or value ``0'' otherwise. An increase of $> 8 \degf$ puts the day of interest in the top 10\% of temperature increases in 2015.
+\item \texttt{temp_jump} (factor) is an indicator variable, taking value ``1'' if \texttt{temp_min_degF_diff} $> 8$, or value ``0'' otherwise. An increase of $> 8 \degf$ puts the day of interest in the top 10\% of day-to-day temperature increases in 2015.
 
 \end{itemize}
 
-%\begin{center}
-%    \begin{tabular}{ | l | l | p{5cm} | p{5cm} |}
-%    \hline
-%    Variable Name & Class & Description & Source \\ \hline \hline
-%    \texttt{date} & Date & Date of observation. &  \\ \hline
-%    \texttt{felonies} & Numeric & Number of felonies occurring on the indicated date. & Cloudy with rain, across many northern regions. Clear spells 
-%    across most of Scotland and Northern Ireland, 
-%    but rain reaching the far northwest. \\ \hline
-%    Wednesday & 10C & 21C & Rain will still linger for the morning. 
-%    Conditions will improve by early afternoon and continue 
-%    throughout the evening. \\
-%    \hline
-%    \end{tabular}
-%\end{center}
+
 
 \subsection{Report Overview}
 
