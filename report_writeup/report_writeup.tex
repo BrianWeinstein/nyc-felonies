@@ -83,9 +83,9 @@ Using multiple linear regression, after accounting for temperature, there is con
 
 Initially, it did not appear that the number of felonies was associated with holidays or with school days, but after removing 17 observations with high studentized residuals, these variables became significant. From the revised model, there is suggestive, but inconclusive evidence that felonies is associated with holidays --- on average, holidays have 13 fewer felonies than non-holidays (95\% CI 0 to 27 fewer felonies; two-sided p-value 0.05275). There is moderate evidence that felonies is associated with school days --- on average, school days have 7 more felonies that non-school days (95\% CI 1 to 13 more felonies; two-sided p-value 0.03306).
 
-After accounting for day of week, the data provides no evidence that day-to-day changes in the number of felonies is associated with large increases in temperature (two-sided p-value 0.10006).
+After accounting for day of week, the data provides no evidence that the day-to-day change in the number of felonies is associated with large increases in temperature (two-sided p-value 0.10006).
 
-\noindent \textbf{Conclusions:} There is a clear association between warmer temperatures and an increased number of felonies. Presence of precipitation, day of week, holidays, and school days are also related to the number of felonies that occur. There is no evidence that the day-to-day changes in the number of felonies is associated with large increases in temperature.
+\noindent \textbf{Conclusions:} There is a clear association between warmer temperatures and an increased number of felonies. Presence of precipitation, day of week, holidays, and school days are also related to the number of felonies that occur. There is no evidence that the day-to-day change in the number of felonies is associated with large increases in temperature.
 
 
 
@@ -114,7 +114,7 @@ In this paper we study three main questions of interest:
 
 \item Are felonies associated with temperature? After taking temperature into account, is felonies associated with precipitation, school days, holidays, and day of week?
 \item Although there's no causal relationship, for a given set of these conditions, how many felonies can the NYPD reasonably expect?
-\item After taking into account temperature, precipitation, school days, holidays, and day of week; are the day-to-day changes in the number of felonies associated with large ($>8 \degf$) increases in temperature?
+\item After taking into account temperature, precipitation, school days, holidays, and day of week; is the day-to-day change in the number of felonies associated with large ($>8 \degf$) increases in temperature?
 \end{enumerate}
 
 
@@ -128,7 +128,7 @@ The dataset contains 365 observations, one for each date in 2015. The class, des
 \setlength\itemsep{-3pt}
 \vspace*{-3mm}
 	
-\item \texttt{felonies} (integer) is a count of the number of felonies committed on each day in NYC in 2015. The values are derived counts from the ``NYPD 7 Major Felony Incidents'' dataset in the NYC Open Data Portal [\href{https://data.cityofnewyork.us/Public-Safety/NYPD-7-Major-Felony-Incidents/hyij-8hr7}{data.cityofnewyork.us/d/hyij-8hr7}]. The felonies included in the dataset that contribute to the overall daily count are burglary, felony assault, grand larceny, grand larceny of motor vehicle, murder and non-negligent manslaughter, rape, and robbery.
+\item \texttt{felonies} (integer) is a count of the number of felonies committed on each day in NYC in 2015. The values are derived from the ``NYPD 7 Major Felony Incidents'' dataset in the NYC Open Data Portal [\href{https://data.cityofnewyork.us/Public-Safety/NYPD-7-Major-Felony-Incidents/hyij-8hr7}{data.cityofnewyork.us/d/hyij-8hr7}]. The felonies included in the dataset that contribute to the overall daily count are burglary, felony assault, grand larceny, grand larceny of motor vehicle, murder and non-negligent manslaughter, rape, and robbery.
 
 \item \texttt{temp_min_degF} (numeric) is the minimum daily temperature on the given date (in degrees Fahrenheit), as reported by the New York Central Park Belvedere Tower weather station. The data was requested via the National Centers for Environmental Information [\href{http://www.ncdc.noaa.gov/cdo-web/search}{ncdc.noaa.gov/cdo-web/search}].
 
@@ -186,7 +186,7 @@ We first examine pairwise scatterplots of some of the numeric variables in the r
 \end{figure}
 
 
-Figure \ref{fig:pairsNumericExclAcc} also shows that there is no linear relationship between \texttt{felonies} and \texttt{school_attendance_pct} (the percent of students present in school on a given day). Any non-school-day has 0\% attendance, so instead of using this as a numeric variable, we convert it to the \texttt{is_school_day} indicator variable, taking value ``1'' if NYC Public Schools were open and in session on the given date (i.e., if \texttt{school_attendance_pct} is $>0$), or value ``0'' otherwise.
+Figure \ref{fig:pairsNumericExclAcc} also shows that there is no linear relationship between \texttt{felonies} and \texttt{school_attendance_pct} (the percent of students present in school on a given day). Any non-school day has 0\% attendance, so instead of using this as a numeric variable, we convert it to the \texttt{is_school_day} indicator variable, taking value ``1'' if NYC Public Schools were open and in session on the given date (i.e., if \texttt{school_attendance_pct} is $>0$), or value ``0'' otherwise.
 
 Faceted boxplots of the categorical variables are shown in Figure \ref{fig:facetCategorical}.
 
@@ -466,7 +466,7 @@ After removing the 17 problematic observations, the holiday indicator and school
 \label{sec:modelingFeloniesDiff}
 
 
-Addressing the third question of interest as a supplementary analysis, we now explore if day-to-day changes in the number of felonies, as compared to the previous day, are associated with large increases in temperature after taking our other covariates into account. The theory here is that spikes in temperature (e.g., at the beginning of a heat wave or on the first few days of spring) might influence the number of felonies that occur. In this section, \texttt{temp_jump} indicates if the temperature has increased by more than $8\degf$ as compared to the previous day (see Section \ref{sec:dataset}).
+Addressing the third question of interest as a supplementary analysis, we now explore if day-to-day changes in the number of felonies, are associated with large increases in temperature, after taking our other covariates into account. The theory here is that spikes in temperature (e.g., at the beginning of a heat wave or on the first few days of spring) might influence the number of felonies that occur. In this section, \texttt{temp_jump} indicates if the temperature has increased by more than $8\degf$ as compared to the previous day (see Section \ref{sec:dataset}).
 
 
 
@@ -624,7 +624,7 @@ Initially, it did not appear that the number of felonies was associated with hol
 In both the initial and revised models, the interaction between temperature and precipitation was not significant (two-sided p-value was $>0.3$ in both models).
 
 
-From a supplementary analysis, after accounting for day of week, the data provides no evidence that day-to-day changes in the number of felonies is associated with large ($>8 \degf$) increases in temperature, as compared to the previous day (two-sided p-value 0.10006).
+From a supplementary analysis, after accounting for day of week, the data provides no evidence that the day-to-day change in the number of felonies is associated with large ($>8 \degf$) increases in temperature, as compared to the previous day (two-sided p-value 0.10006).
 
 
 \subsection{Scope of Inference}
