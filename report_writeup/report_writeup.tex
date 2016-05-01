@@ -116,7 +116,7 @@ In this paper we study three main questions of interest:
 \subsection{Dataset}
 \label{sec:dataset}
 
-The class, description, and source for each variable in the dataset is outlined below. Only those variables used in the analyses are included here --- redundant and untranformed variables that were removed during exploratory analysis are not described below. The dataset contains 365 observations, one for each date in 2015.
+The class, description, and source for each variable in the dataset is outlined below. Only those variables used/referenced in the analyses are included here --- redundant and untranformed variables that were removed during exploratory analysis are not described below. The dataset contains 365 observations, one for each date in 2015.
 
 \begin{itemize}
 \setlength\itemsep{-1pt}
@@ -125,7 +125,6 @@ The class, description, and source for each variable in the dataset is outlined 
 
 \item \texttt{temp_min_degF} (numeric) is the minimum daily temperature on the given date (in degrees Fahrenheit), as reported by the New York Central Park Belvedere Tower weather station. The data was requested via the National Centers for Environmental Information [\href{http://www.ncdc.noaa.gov/cdo-web/search}{ncdc.noaa.gov/cdo-web/search}].
 
-\item \texttt{is_warm} (factor) is an indicator variable, taking value ``1'' if \texttt{temp_min_degF} is $\geq 51.98 \degf$ (the median for 2015) on the given date, and ``0'' otherwise.
 
 \item \texttt{any_precip} (factor) is an indicator variable, taking value ``1'' if there was any precipitation on the given date, and ``0'' otherwise. See \texttt{temp_min_degF} for source information.
 
