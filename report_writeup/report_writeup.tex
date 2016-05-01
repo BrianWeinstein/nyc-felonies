@@ -116,7 +116,7 @@ In this paper we study three main questions of interest:
 \subsection{Dataset}
 \label{sec:dataset}
 
-The class, description, and source for each variable in the dataset is outlined below. Only those variables used/referenced in the analyses are included here --- redundant and untranformed variables that were removed during exploratory analysis are not described below. The dataset contains 365 observations, one for each date in 2015.
+The dataset contains 365 observations, one for each date in 2015. The class, description, and source for each variable in the dataset is outlined below. Only those variables used/referenced in the analyses are included here --- redundant and untranformed variables that were removed during exploratory analysis are not described below.
 
 \begin{itemize}
 \setlength\itemsep{-1pt}
@@ -212,7 +212,7 @@ We also assume the four assumptions of linear regression:
 \subsection{Exploratory Model}
 \label{sec:feloniesExploratoryModel}
 
-As an exploratory step, we initially perform a simple linear regression of felonies on temperature. The regression coefficients, standard errors, and p-values are shown below:
+As an exploratory step, we initially perform a simple linear regression of felonies on temperature. The regression summary is shown in Table \ref{tab:lm1}.
 
 % lm1
 %\begin{codeSmall}
@@ -223,7 +223,9 @@ As an exploratory step, we initially perform a simple linear regression of felon
 
 % lm1
 % xtable(as.data.frame(summary(lm1)$coefficients), digits=c(100, 2, 2, 2, 4), display=c("s", "f", "f", "f", "g"))
+
 \begin{table}[ht]
+\vspace*{-1mm}
 \footnotesize
 \centering
 \begin{tabular}{rrrrr}
@@ -234,6 +236,11 @@ As an exploratory step, we initially perform a simple linear regression of felon
   temp\_min\_degF & 1.38 & 0.08 & 17.91 & $<2 \times 10^{-16}$ \\ 
    \hline
 \end{tabular}
+\captionsetup{width=0.8\textwidth}
+\vspace*{-2mm}
+\caption{Coefficients, standard errors, and p-values from the regression of felonies on temperature.}
+\label{tab:lm1}   
+\vspace*{-3mm}
 \end{table}
 
 
@@ -260,7 +267,7 @@ There are some potentially problematic observations with high leverage or large 
 \subsection{Statistical Analysis}
 \label{sec:modelFeloniesMultipleRegression}
 
-We next incorporate additional covariates, performing a multiple linear regression of felonies on the variables shown in the regression summary below:
+We next incorporate additional covariates, performing a multiple linear regression of felonies on the variables shown in the regression summary in Table \ref{tab:lm4}. \todo{update caption}
 
 
 % lm4
@@ -284,6 +291,7 @@ We next incorporate additional covariates, performing a multiple linear regressi
 % lm4
 % xtable(as.data.frame(summary(lm4)$coefficients), digits=c(100, 2, 2, 2, 4), display=c("s", "f", "f", "f", "g"))
 \begin{table}[ht]
+\vspace*{-1mm}
 \footnotesize
 \centering
 \begin{tabular}{rrrrr}
@@ -304,8 +312,12 @@ We next incorporate additional covariates, performing a multiple linear regressi
   temp\_min\_degF:any\_precip1 & 0.16 & 0.17 & 0.95 & 0.3434 \\ 
    \hline
 \end{tabular}
+\captionsetup{width=0.8\textwidth}
+\vspace*{-2mm}
+\caption{Coefficients, standard errors, and p-values from the regression of felonies on temperature.}
+\label{tab:lm4}   
+\vspace*{-3mm}
 \end{table}
-
 
 
 %Residual standard error: 25.58 on 353 degrees of freedom
@@ -360,7 +372,7 @@ Next, we check for influential observations by examining leverages, studentized 
 
 
 
-We re-fit the regression from Section \ref{sec:modelFeloniesMultipleRegression}, but now excluding the 17 potentially problematic observations. The regression coefficients are shown below:
+We re-fit the regression from Section \ref{sec:modelFeloniesMultipleRegression}, but now excluding the 17 potentially problematic observations. The regression summary is shown in Table \ref{tab:lm5}. \todo{update the caption}
 
 % lm5
 %\begin{codeSmall}
@@ -383,6 +395,7 @@ We re-fit the regression from Section \ref{sec:modelFeloniesMultipleRegression},
 % lm5
 % xtable(as.data.frame(summary(lm5)$coefficients), digits=c(100, 2, 2, 2, 4), display=c("s", "f", "f", "f", "g"))
 \begin{table}[ht]
+\vspace*{-1mm}
 \footnotesize
 \centering
 \begin{tabular}{rrrrr}
@@ -403,8 +416,12 @@ We re-fit the regression from Section \ref{sec:modelFeloniesMultipleRegression},
   temp\_min\_degF:any\_precip1 & 0.14 & 0.14 & 1.00 & 0.3161 \\ 
    \hline
 \end{tabular}
+\captionsetup{width=0.8\textwidth}
+\vspace*{-2mm}
+\caption{Coefficients, standard errors, and p-values from the regression of felonies on temperature.}
+\label{tab:lm5}   
+\vspace*{-3mm}
 \end{table}
-
 
 
 
@@ -440,7 +457,7 @@ In this section we use multiple linear regression to model \texttt{felonies_diff
 \label{sec:modelFeloniesDiffMultipleRegression}
 
 
-We now perform a multiple linear regression of \texttt{felonies_diff} on the variables shown in the regression summary below:
+We now perform a multiple linear regression of \texttt{felonies_diff} on the variables shown in the regression summary in Table \ref{tab:lmd2}. \todo{update the caption}
 
 % lmd2
 %\begin{codeSmall}
@@ -465,6 +482,7 @@ We now perform a multiple linear regression of \texttt{felonies_diff} on the var
 % lmd2
 % xtable(as.data.frame(summary(lmd2)$coefficients), digits=c(100, 2, 2, 2, 4), display=c("s", "f", "f", "f", "g"))
 \begin{table}[ht]
+\vspace*{-1mm}
 \footnotesize
 \centering
 \begin{tabular}{rrrrr}
@@ -486,6 +504,11 @@ We now perform a multiple linear regression of \texttt{felonies_diff} on the var
   temp\_jump1:temp\_min\_degF & -0.28 & 0.35 & -0.81 & 0.4187 \\ 
    \hline
 \end{tabular}
+\captionsetup{width=0.8\textwidth}
+\vspace*{-2mm}
+\caption{Coefficients, standard errors, and p-values from the regression of felonies on temperature.}
+\label{tab:lmd2}   
+\vspace*{-3mm}
 \end{table}
 
 
@@ -508,8 +531,9 @@ The data provides overwhelming evidence that \texttt{felonies_diff} is associate
 
 Neither a residual plot nor a Q-Q plot (not shown) reveal any significant violations of our assumptions. Case influence statistics reveal 12 potentially influential observations, but there is no change in interpretation once they're removed.
 
-To simplify the model, we now iteratively remove the non-significant variables from the regression, and end up with a model in which only \texttt{temp_jump} and \texttt{day_of_week} are remaining. The regression summary is shown below:
+To simplify the model, we now iteratively remove the non-significant variables from the regression, and end up with a model in which only \texttt{temp_jump} and \texttt{day_of_week} are remaining. The regression summary is shown in Table \ref{tab:lmd6}. \todo{update the caption}
 
+% lmd6
 %\begin{codeSmall}
 %             Estimate Std. Error t value Pr(>|t|)    
 %             Estimate Std. Error t value Pr(>|t|)    
@@ -527,6 +551,7 @@ To simplify the model, we now iteratively remove the non-significant variables f
 % lmd6
 % xtable(as.data.frame(summary(lmd6)$coefficients), digits=c(100, 2, 2, 2, 4), display=c("s", "f", "f", "f", "g"))
 \begin{table}[ht]
+\vspace*{-1mm}
 \footnotesize
 \centering
 \begin{tabular}{rrrrr}
@@ -543,6 +568,11 @@ To simplify the model, we now iteratively remove the non-significant variables f
   day\_of\_week7 & 1.75 & 6.13 & 0.28 & 0.7759 \\ 
    \hline
 \end{tabular}
+\captionsetup{width=0.8\textwidth}
+\vspace*{-2mm}
+\caption{Coefficients, standard errors, and p-values from the regression of felonies on temperature.}
+\label{tab:lmd6}   
+\vspace*{-3mm}
 \end{table}
 
 
