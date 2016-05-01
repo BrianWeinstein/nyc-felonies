@@ -165,7 +165,7 @@ Lastly, in Section \ref{sec:conclusions} we discuss our statistical conclusions 
 \section{Exploratory Analysis and Data Cleaning}
 \label{sec:eda}
 
-We first examine pairwise scatterplots of some of the numeric variables in the raw dataset (\texttt{felonies}, \texttt{temp_min_degF}, \texttt{temp_max_degF}, and \texttt{school_attendance_pct}), as shown in Figure \ref{fig:pairsNumericExclAcc}. From this figure we first notice that there are approximately linear relationships between \texttt{felonies} and \texttt{temp_min_degF}, and between \texttt{felonies} and \texttt{temp_max_degF}. There is also strong collinearity between \texttt{temp_min_degF} and \texttt{temp_max_degF} (correlation: 0.969), however, so we remove one of these variables (\texttt{temp_max_degF}) from the covariates that will be used in the regression model.
+We first examine pairwise scatterplots of some of the numeric variables in the raw dataset (\texttt{felonies}, \texttt{temp_min_degF}, \texttt{temp_max_degF}, and \texttt{school_attendance_pct}), as shown in Figure \ref{fig:pairsNumericExclAcc}. From this figure we first notice that there are approximately linear relationships between \texttt{felonies} and \texttt{temp_min_degF}, and between \texttt{felonies} and \texttt{temp_max_degF}. There is strong collinearity between \texttt{temp_min_degF} and \texttt{temp_max_degF} (correlation: 0.969), however, so we remove one of these variables (\texttt{temp_max_degF}) from the covariates that will be used in the regression model.
 
 \begin{figure}[!h]
 	\centering
@@ -176,7 +176,7 @@ We first examine pairwise scatterplots of some of the numeric variables in the r
 \end{figure}
 
 
-Figure \ref{fig:pairsNumericExclAcc} also shows that there is no linear relationship between \texttt{felonies} and \texttt{school_attendance_pct} (the percent of students present in school on a given day). Any non-school-day has 0\% attendance, so instead of using this as a numeric variable, we convert it to the indicator variable \texttt{is_school_day}, taking value ``1'' if NYC Public Schools were open and in session on the given date (i.e., if \texttt{school_attendance_pct} is $>0$), or value ``0'' otherwise.
+Figure \ref{fig:pairsNumericExclAcc} also shows that there is no linear relationship between \texttt{felonies} and \texttt{school_attendance_pct} (the percent of students present in school on a given day). Any non-school-day has 0\% attendance, so instead of using this as a numeric variable, we convert it to the \texttt{is_school_day} indicator variable, taking value ``1'' if NYC Public Schools were open and in session on the given date (i.e., if \texttt{school_attendance_pct} is $>0$), or value ``0'' otherwise.
 
 Faceted boxplots of the categorical variables are shown in Figure \ref{fig:facetCategorical}.
 
@@ -191,7 +191,7 @@ Faceted boxplots of the categorical variables are shown in Figure \ref{fig:facet
 \section{Modeling the Number of Felonies Per Day}
 \label{sec:modelingFelonies}
 
-In this section we use simple and multiple linear regression to model the number of felonies per day (the first and second questions of interest).
+In this section we use simple and multiple linear regression to model the number of felonies per day, addressing the first and second questions of interest.
 
 \subsection{Assumptions}
 \label{sec:feloniesAssumptions}
@@ -204,8 +204,8 @@ We also assume the four assumptions of linear regression:
 
 \item Linearity: \texttt{felonies} can be expressed as linear combination of the independent variables
 \item Homoscedasticity (constant variance): $\text{Var}(Y|X_1,\ldots, X_p)$ is the same at all values of $X_1,\ldots, X_p$
-\item Normality: residuals of the fit are normally distributed
-\item Independence: residuals of the fit are independent
+\item Normality: residuals in the fitted model are normally distributed
+\item Independence: residuals in the fitted model are independent
 \end{itemize}
 
 
@@ -226,7 +226,7 @@ temp_min_degF   1.38097    0.07709   17.91   <2e-16 ***
 
 There is overwhelming evidence of an association between felonies and temperature. For every 1 $\degf$ increase in temperature, there are 1.38 additional felonies per day (95\% CI 1.22938 to 1.532569, two sided p-value $<2\times10^{-16}$ for a test that the coefficient is 0).
 
-What's most interesting here, however, are the observations with high residuals, as shown in the residual plot in Figure \ref{fig:lm1Residuals}. Some days with large residuals aren't modeled well by temperature alone --- Jan. 1, 2015, for example, a federal holiday, had many more felonies than expected, given the temperature on that day. Including other covariates in the model, like \texttt{is_holiday} (an indicator as to whether the day is a NY/federal holiday), might help to account for some of this behavior. We next add these additional variables in Section \ref{sec:modelFeloniesMultipleRegression}.
+What's most interesting here, however, are the observations with high residuals, as shown in the residual plot in Figure \ref{fig:lm1Residuals}. Some days with large residuals aren't modeled well by temperature alone --- Jan. 1, 2015, for example, a federal holiday, had many more felonies than we'd expect given the temperature on that day. Including other covariates in the model, like \texttt{is_holiday} (an indicator as to whether the day is a NY/federal holiday), might help to account for some of this behavior. We next add these additional variables in Section \ref{sec:modelFeloniesMultipleRegression}.
 
 \begin{figure}[!h]
 	\centering
@@ -278,7 +278,7 @@ temp_min_degF:any_precip1   0.15666    0.16512   0.949 0.343385
 %Multiple R-squared:  0.5527,	Adjusted R-squared:  0.5388 
 %F-statistic: 39.66 on 11 and 353 DF,  p-value: < 2.2e-16
 
-After accounting for temperature, there is convincing evidence that felonies is associated with precipitation. On average there are 21 fewer felonies on days with precipitation that on days without (95\% CI: 4 to 38 fewer felonies; two-sided p-value: 0.014990). The data also provides overwhelming evidence that felonies is associated with day of week (p-value $3 \times 10^{-6}$ from an extra sum of squares F-test) --- compared to Sundays, Fridays have 19 more felonies on average (95\% CI: 8 to 30 more felonies; two-sided p-value: 0.000938), and Saturdays have 14 more felonies on average (95\% CI: 4 to 24 more felonies; two-sided p-value: 0.004940).
+After accounting for temperature, there is convincing evidence that felonies is associated with precipitation. On average there are 21 fewer felonies on days with precipitation that on days without (95\% CI 4 to 38 fewer felonies; two-sided p-value 0.014990). The data also provides overwhelming evidence that felonies is associated with day of week (p-value $3 \times 10^{-6}$ from an extra sum of squares F-test) --- compared to Sundays, Fridays have 19 more felonies on average (95\% CI 8 to 30 more felonies; two-sided p-value 0.000938), and Saturdays have 14 more felonies on average (95\% CI 4 to 24 more felonies; two-sided p-value 0.004940).
 
 After accounting for temperature, the holiday indicator, school day indicator, and the interaction between temperature and precipitation are not significant (two-sided p-values: 0.434865, 0.113258, and 0.343385, respectively).
 
@@ -302,7 +302,7 @@ To check the validity of our model, we examine a residual plot and Q-Q plot in F
   \label{fig:lm4ResidualsQQ}
 \end{figure}
 
-Next, we check for influential observations by examining leverages, studentized residuals, and Cook's distances. From these case influence statistics there are 17 potentially problematic observations. Partial residual plots for \texttt{is_holiday} and \texttt{is_school_day} (two of the non-significant variables from the regression) are shown in Figure \ref{fig:lm4Pres}. If we exclude the 17 potentially problematic observations (coded with blue triangles in Figure \ref{fig:lm4Pres}), it appears as though holidays have fewer felonies than non-holidays, and school days tend to have more felonies than non-school days.
+Next, we check for influential observations by examining leverages, studentized residuals, and Cook's distances. From these case influence statistics there are 17 potentially problematic observations. Partial residual plots for \texttt{is_holiday} and \texttt{is_school_day} (two of the non-significant variables from the regression) are shown in Figure \ref{fig:lm4Pres}. If we ignore the 17 potentially problematic observations (coded with blue triangles in Figure \ref{fig:lm4Pres}), it appears as though holidays have fewer felonies than non-holidays, and school days tend to have more felonies than non-school days.
 
 % two-column figure
 \begin{figure}[!h]
@@ -345,7 +345,7 @@ temp_min_degF:any_precip1   0.13801    0.13747   1.004    0.31615
 %F-statistic:  64.1 on 11 and 336 DF,  p-value: < 2.2e-16
 
 
-After removing the 17 problematic observations, the holiday indicator and school day indicator are now significant. The interaction between temperature and precipitation still isn't significant, even after removing the 17 observations. \todo{Possibly include inferences here. Otherwise, include them in the Conclusion section.}
+After removing the 17 problematic observations, the holiday indicator and school day indicator are now significant. There is suggestive, but inconclusive evidence that \texttt{felonies} is associated with holidays --- on average, holidays have 13 fewer felonies than non-holidays (95\% CI 0 to 27 fewer felonies; two-sided p-value 0.05275). There is moderate evidence that felonies is associated with school days --- on average, school days have 7 more felonies that non-school days (95\% CI 1 to 13 more felonies; two-sided p-value 0.03306). The interaction between temperature and precipitation still isn't significant, even after removing the 17 observations (two-sided p-value 0.31615).
 
 
 %If hitting the page limit, probably no need to remove the interaction term (models lm6 and lm7).
@@ -357,7 +357,7 @@ After removing the 17 problematic observations, the holiday indicator and school
 \label{sec:modelingFeloniesDiff}
 
 
-As a supplementary analysis, we now explore if changes in the number of felonies, as compared to the previous day, is associated with large increases in temperature, after taking our other covariates into account (the third question of interest). The theory here is that spikes in temperature (e.g., at the beginning of a heat wave or on the first few days of spring) might influence the number of felonies that occur. In this section, \texttt{temp_jump} indicates if the temperature has increased by more than $8\degf$ as compared to the previous day.
+Addressing the third question of interest as a supplementary analysis, we now explore if day-to-day changes in the number of felonies, as compared to the previous day, are associated with large increases in temperature after taking our other covariates into account. The theory here is that spikes in temperature (e.g., at the beginning of a heat wave or on the first few days of spring) might influence the number of felonies that occur. In this section, \texttt{temp_jump} indicates if the temperature has increased by more than $8\degf$ as compared to the previous day (see Section \ref{sec:dataset}).
 
 
 
@@ -437,7 +437,7 @@ The temperature jump indicator still is not significant (two-sided p-value 0.100
 
 The data provides overwhelming evidence that felonies is associated with temperature. For every 1 $\degf$ increase in temperature, there are, on average, 1.38 additional felonies per day (95\% CI 1.22938 to 1.532569, two sided p-value $<2\times10^{-16}$).
 
-After accounting for temperature, there is convincing evidence that felonies is associated with precipitation. On average there are 21 fewer felonies on days with precipitation that on days without (95\% CI: 4 to 38 fewer felonies; two-sided p-value: 0.014990). The data also provides overwhelming evidence that felonies is associated with day of week (p-value $3 \times 10^{-6}$ from an extra sum of squares F-test).
+After accounting for temperature, there is convincing evidence that felonies is associated with precipitation. On average there are 21 fewer felonies on days with precipitation that on days without (95\% CI 4 to 38 fewer felonies; two-sided p-value 0.014990). The data also provides overwhelming evidence that felonies is associated with day of week (p-value $3 \times 10^{-6}$ from an extra sum of squares F-test).
 
 Initially, it did not appear that the number of felonies was associated with holidays or with school days, but after removing 17 observations with high studentized residuals, these variables became significant. From the revised model, there is suggestive, but inconclusive evidence that felonies is associated with holidays --- on average, holidays have 13 fewer felonies than non-holidays (95\% CI 0 to 27 fewer felonies; two-sided p-value 0.05275). Again from the revised model, there is moderate evidence that felonies is associated with school days --- on average, school days have 7 more felonies that non-school days (95\% CI 1 to 13 more felonies; two-sided p-value 0.03306).
 
@@ -449,7 +449,7 @@ From a supplementary analysis, after accounting for day of week, the data provid
 
 \subsection{Scope of Inference}
 
-This is purely observational data --- observations weren't randomly sampled --- so these statistical associations cannot be used to draw causal connections. Further, any generalization of these results to cities other than NYC for time periods other than 2015 is speculative.
+As this is purely observational data that weren't sampled from a larger population, these statistical associations cannot be used to draw causal connections. Further, any generalization of these results to cities other than NYC for time periods other than 2015 is speculative.
 
 
 
