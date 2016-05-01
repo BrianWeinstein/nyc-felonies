@@ -150,7 +150,15 @@ The class, description, and source for each variable in the dataset is outlined 
 
 \subsection{Report Overview}
 
-In Section \ref{sec:eda} we present some exploratory analysis and plots, in Sections \ref{sec:linearRegressionModelAndAssumptions} and \ref{sec:statisticalAnalysisAndInference} we walkthrough the model setup and statistical analysis, in Section \ref{sec:modelChecking} we do some model checking, and in Section \ref{sec:conclusion} we present our conclusions. \todo{update this}
+In Section \ref{sec:eda} we briefly present some exploratory analysis and data transformations.
+
+Then in Section \ref{sec:modelingFelonies} we model the daily number of felonies. Assumptions are discussed in Section \ref{sec:feloniesAssumptions}; an exploratory model is presented in Section \ref{sec:feloniesExploratoryModel}; then the analysis and model checking and improvement are presented in Sections \ref{sec:modelFeloniesMultipleRegression} and \ref{sec:modelFeloniesModelCheckingImprovement}.
+
+In Section \ref{sec:modelingFeloniesDiff} we model the day-to-day changes in the number of felonies; again discussing our assumptions, analysis, and model checking and improvement in Sections \ref{sec:feloniesDiffAssumptions}, \ref{sec:modelFeloniesDiffMultipleRegression}, and \ref{sec:modelFeloniesDiffModelCheckingImprovement}.
+
+Lastly, in Section \ref{sec:conclusions} we discuss our statistical conclusions and the scope of inference.
+
+
 
 
 
@@ -181,6 +189,7 @@ Faceted boxplots of the categorical variables are shown in Figure \ref{fig:facet
 \end{figure}
 
 \section{Modeling the Number of Felonies Per Day}
+\label{sec:modelingFelonies}
 
 In this section we use simple and multiple linear regression to model the number of felonies per day (the first and second questions of interest).
 
@@ -200,7 +209,8 @@ We also assume the four assumptions of linear regression:
 \end{itemize}
 
 
-\subsection{Exploratory Models}
+\subsection{Exploratory Model}
+\label{sec:feloniesExploratoryModel}
 
 As an exploratory step, we initially perform a simple linear regression of felonies on temperature. The regression coefficients, standard errors, and p-values are shown below: \todo{Might not even need to show these here, as long as I keep the summary in the next paragraph.}
 
@@ -272,7 +282,8 @@ After accounting for temperature, there is convincing evidence that felonies is 
 
 After accounting for temperature, the holiday indicator, school day indicator, and the interaction between temperature and precipitation are not significant (two-sided p-values: 0.434865, 0.113258, and 0.343385, respectively).
 
-\subsection{Model Checking}
+\subsection{Model Checking and Improvement}
+\label{sec:modelFeloniesModelCheckingImprovement}
 
 To check the validity of our model, we examine a residual plot and Q-Q plot in Figure \ref{fig:lm4ResidualsQQ}. The residual plot doesn't reveal any significant violations of the linearity, constant variance, or independence assumptions, and the Q-Q plot shows that the residuals aren't perfectly normal, but that normality isn't a bad approximation.
 
@@ -310,7 +321,6 @@ Next, we check for influential observations by examining leverages, studentized 
 
 
 
-\subsection{Model Improvement}
 
 We re-fit the regression from Section \ref{sec:modelFeloniesMultipleRegression}, but now excluding the 17 potentially problematic observations. The regression coefficients are shown below:
 
@@ -344,6 +354,8 @@ After removing the 17 problematic observations, the holiday indicator and school
 
 
 \section{Modeling the Day-to-Day Change in the Number of Felonies Per Day}
+\label{sec:modelingFeloniesDiff}
+
 
 As a supplementary analysis, we now explore if changes in the number of felonies, as compared to the previous day, is associated with large increases in temperature, after taking our other covariates into account (the third question of interest). The theory here is that spikes in temperature (e.g., at the beginning of a heat wave or on the first few days of spring) might influence the number of felonies that occur. In this section, \texttt{temp_jump} indicates if the temperature has increased by more than $8\degf$ as compared to the previous day.
 
@@ -351,10 +363,14 @@ As a supplementary analysis, we now explore if changes in the number of felonies
 
 
 \subsection{Assumptions}
+\label{sec:feloniesDiffAssumptions}
+
 
 In this section we use multiple linear regression to model \texttt{felonies_diff} (the difference in the number of felonies as compared to the previous day; see Section \ref{sec:dataset}). Again we assume the 4 assumptions of linear regression, as outlined in Section \ref{sec:feloniesAssumptions}.
 
 \subsection{Statistical Analysis}
+\label{sec:modelFeloniesDiffMultipleRegression}
+
 
 We now perform a multiple linear regression of \texttt{felonies_diff} on the variables shown in the regression summary below:
 
@@ -387,6 +403,8 @@ The data provides overwhelming evidence that \texttt{felonies_diff} is associate
 
 
 \subsection{Model Checking and Improvement}
+\label{sec:modelFeloniesDiffModelCheckingImprovement}
+
 
 Neither a residual plot nor a Q-Q plot (not shown) reveal any significant violations of our assumptions. Case influence statistics reveal 12 potentially influential observations, but there is no change in interpretation once they're removed.
 
@@ -413,7 +431,7 @@ The temperature jump indicator still is not significant (two-sided p-value 0.100
 
 
 \section{Conclusions}
-\label{sec:conclusion}
+\label{sec:conclusions}
 
 \subsection{Statistical Conclusions}
 
