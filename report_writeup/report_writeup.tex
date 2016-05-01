@@ -212,13 +212,30 @@ We also assume the four assumptions of linear regression:
 \subsection{Exploratory Model}
 \label{sec:feloniesExploratoryModel}
 
-As an exploratory step, we initially perform a simple linear regression of felonies on temperature. The regression coefficients, standard errors, and p-values are shown below: \todo{Might not even need to show these here, as long as I keep the summary in the next paragraph.}
+As an exploratory step, we initially perform a simple linear regression of felonies on temperature. The regression coefficients, standard errors, and p-values are shown below:
 
+% lm1
 \begin{codeSmall}
                Estimate Std. Error t value Pr(>|t|)    
 (Intercept)   213.11913    4.07082   52.35   <2e-16 ***
 temp_min_degF   1.38097    0.07709   17.91   <2e-16 ***
 \end{codeSmall}
+
+% lm1
+% xtable(as.data.frame(summary(lm1)$coefficients), digits=c(100, 2, 2, 2, 4), display=c("s", "f", "f", "f", "g"))
+\begin{table}[ht]
+\footnotesize
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & Estimate & Std. Error & t value & Pr($>|t|$) \\ 
+  \hline
+(Intercept) & 213.12 & 4.07 & 52.35 & $<2 \times 10^{-16}$ \\ 
+  temp\_min\_degF & 1.38 & 0.08 & 17.91 & $<2 \times 10^{-16}$ \\ 
+   \hline
+\end{tabular}
+\end{table}
+
 
 %Residual standard error: 27.48 on 363 degrees of freedom
 %Multiple R-squared:  0.4692,	Adjusted R-squared:  0.4678 
@@ -236,19 +253,6 @@ What's most interesting here, however, are the observations with high residuals,
 	\label{fig:lm1Residuals}
 \end{figure}
 
-%% two-column figure
-%\begin{figure}[!h]
-%  \centering
-%  \captionsetup{width=0.8\textwidth}
-%  \subfloat[Residual plot.]
-%  		{\includegraphics[width=0.46\textwidth]
-%  		{figures/lm1Residuals.png}\label{fig:lm1Residuals}}
-%  \hfill
-%  \subfloat[Q-Q plot.]
-%  		{\includegraphics[width=0.46\textwidth]
-%  		{figures/lm1QQ.png}\label{fig:f2}}
-%  \caption{Residual plot and Q-Q plot for the regression of \texttt{felonies} on \texttt{temp_min_degF}.}
-%\end{figure}
 
 There are some potentially problematic observations with high leverage or large studentized residuals, but there was no change in interpretation after removing these observations from the dataset. Also note that we tested higher order terms of \texttt{temp_min_degF} in a multiple regression, but only the first-order term was significant.
 
@@ -258,6 +262,8 @@ There are some potentially problematic observations with high leverage or large 
 
 We next incorporate additional covariates, performing a multiple linear regression of felonies on the variables shown in the regression summary below:
 
+
+% lm4
 \begin{codeSmall}
                            Estimate Std. Error t value Pr(>|t|)    
 (Intercept)               210.71208    5.66649  37.186  < 2e-16 ***
@@ -274,9 +280,41 @@ day_of_week7               14.21319    5.02454   2.829 0.004940 **
 temp_min_degF:any_precip1   0.15666    0.16512   0.949 0.343385    
 \end{codeSmall}
 
+
+% lm4
+% xtable(as.data.frame(summary(lm4)$coefficients), digits=c(100, 2, 2, 2, 4), display=c("s", "f", "f", "f", "g"))
+\begin{table}[ht]
+\footnotesize
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & Estimate & Std. Error & t value & Pr($>|t|$) \\ 
+  \hline
+(Intercept) & 210.71 & 5.67 & 37.19 & $<2 \times 10^{-16}$ \\ 
+  temp\_min\_degF & 1.38 & 0.09 & 15.75 & $<2 \times 10^{-16}$ \\ 
+  any\_precip1 & -21.01 & 8.59 & -2.44 & 0.01499 \\ 
+  is\_holiday1 & -6.01 & 7.68 & -0.78 & 0.4349 \\ 
+  is\_school\_day1 & 5.95 & 3.75 & 1.59 & 0.1133 \\ 
+  day\_of\_week2 & 0.07 & 5.74 & 0.01 & 0.9905 \\ 
+  day\_of\_week3 & -3.30 & 5.70 & -0.58 & 0.5636 \\ 
+  day\_of\_week4 & -3.47 & 5.72 & -0.61 & 0.5444 \\ 
+  day\_of\_week5 & -0.18 & 5.68 & -0.03 & 0.9752 \\ 
+  day\_of\_week6 & 19.01 & 5.70 & 3.34 & 0.0009384 \\ 
+  day\_of\_week7 & 14.21 & 5.02 & 2.83 & 0.00494 \\ 
+  temp\_min\_degF:any\_precip1 & 0.16 & 0.17 & 0.95 & 0.3434 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+
 %Residual standard error: 25.58 on 353 degrees of freedom
 %Multiple R-squared:  0.5527,	Adjusted R-squared:  0.5388 
 %F-statistic: 39.66 on 11 and 353 DF,  p-value: < 2.2e-16
+
+
+
+
 
 After accounting for temperature, there is convincing evidence that felonies is associated with precipitation. On average there are 21 fewer felonies on days with precipitation that on days without (95\% CI 4 to 38 fewer felonies; two-sided p-value 0.014990). The data also provides overwhelming evidence that felonies is associated with day of week (p-value $3 \times 10^{-6}$ from an extra sum of squares F-test) --- compared to Sundays, Fridays have 19 more felonies on average (95\% CI 8 to 30 more felonies; two-sided p-value 0.000938), and Saturdays have 14 more felonies on average (95\% CI 4 to 24 more felonies; two-sided p-value 0.004940).
 
@@ -324,6 +362,7 @@ Next, we check for influential observations by examining leverages, studentized 
 
 We re-fit the regression from Section \ref{sec:modelFeloniesMultipleRegression}, but now excluding the 17 potentially problematic observations. The regression coefficients are shown below:
 
+% lm5
 \begin{codeSmall}
                            Estimate Std. Error t value   Pr(>|t|)    
 (Intercept)               202.29838    4.72876  42.780    < 2e-16 ***
@@ -339,6 +378,35 @@ day_of_week6               22.99155    4.79145   4.798 0.00000241 ***
 day_of_week7               19.50039    4.21983   4.621 0.00000545 ***
 temp_min_degF:any_precip1   0.13801    0.13747   1.004    0.31615    
 \end{codeSmall}
+
+
+% lm5
+% xtable(as.data.frame(summary(lm5)$coefficients), digits=c(100, 2, 2, 2, 4), display=c("s", "f", "f", "f", "g"))
+\begin{table}[ht]
+\footnotesize
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & Estimate & Std. Error & t value & Pr($>|t|$) \\ 
+  \hline
+(Intercept) & 202.30 & 4.73 & 42.78 & $<2 \times 10^{-16}$ \\ 
+  temp\_min\_degF & 1.48 & 0.07 & 20.17 & $<2 \times 10^{-16}$ \\ 
+  any\_precip1 & -20.41 & 7.20 & -2.83 & 0.004863 \\ 
+  is\_holiday1 & -13.27 & 6.83 & -1.94 & 0.05275 \\ 
+  is\_school\_day1 & 6.69 & 3.13 & 2.14 & 0.03306 \\ 
+  day\_of\_week2 & 4.01 & 4.82 & 0.83 & 0.4055 \\ 
+  day\_of\_week3 & 0.11 & 4.73 & 0.02 & 0.9819 \\ 
+  day\_of\_week4 & -0.19 & 4.74 & -0.04 & 0.9683 \\ 
+  day\_of\_week5 & -2.77 & 4.80 & -0.58 & 0.5639 \\ 
+  day\_of\_week6 & 22.99 & 4.79 & 4.80 & $2.409 \times 10^{-6}$ \\ 
+  day\_of\_week7 & 19.50 & 4.22 & 4.62 & $5.448 \times 10^{-6}$ \\ 
+  temp\_min\_degF:any\_precip1 & 0.14 & 0.14 & 1.00 & 0.3161 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+
 
 %Residual standard error: 20.85 on 336 degrees of freedom
 %Multiple R-squared:  0.6773,	Adjusted R-squared:  0.6667 
@@ -374,6 +442,7 @@ In this section we use multiple linear regression to model \texttt{felonies_diff
 
 We now perform a multiple linear regression of \texttt{felonies_diff} on the variables shown in the regression summary below:
 
+% lmd2
 \begin{codeSmall}
                           Estimate Std. Error t value Pr(>|t|)    
 (Intercept)              -19.09877    6.66217  -2.867 0.004397 ** 
@@ -390,6 +459,37 @@ day_of_week6              25.59847    6.96531   3.675 0.000275 ***
 day_of_week7               1.79654    6.14494   0.292 0.770183    
 temp_jump1:temp_min_degF  -0.28253    0.34895  -0.810 0.418679    
 \end{codeSmall}
+
+
+
+% lmd2
+% xtable(as.data.frame(summary(lmd2)$coefficients), digits=c(100, 2, 2, 2, 4), display=c("s", "f", "f", "f", "g"))
+\begin{table}[ht]
+\footnotesize
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & Estimate & Std. Error & t value & Pr($>|t|$) \\ 
+  \hline
+(Intercept) & -19.10 & 6.66 & -2.87 & 0.004397 \\ 
+  temp\_jump1 & 21.74 & 16.38 & 1.33 & 0.1854 \\ 
+  temp\_min\_degF & 0.12 & 0.10 & 1.26 & 0.2068 \\ 
+  any\_precip1 & -1.91 & 3.72 & -0.51 & 0.6089 \\ 
+  is\_holiday1 & 0.95 & 9.40 & 0.10 & 0.9195 \\ 
+  is\_school\_day1 & 6.95 & 4.60 & 1.51 & 0.1318 \\ 
+  day\_of\_week2 & 12.22 & 7.00 & 1.75 & 0.08167 \\ 
+  day\_of\_week3 & 2.91 & 6.98 & 0.42 & 0.6765 \\ 
+  day\_of\_week4 & 11.05 & 7.00 & 1.58 & 0.1151 \\ 
+  day\_of\_week5 & 9.95 & 6.94 & 1.43 & 0.1529 \\ 
+  day\_of\_week6 & 25.60 & 6.97 & 3.68 & 0.0002747 \\ 
+  day\_of\_week7 & 1.80 & 6.14 & 0.29 & 0.7702 \\ 
+  temp\_jump1:temp\_min\_degF & -0.28 & 0.35 & -0.81 & 0.4187 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+
 
 %Residual standard error: 31.23 on 352 degrees of freedom
 %Multiple R-squared:  0.103,	Adjusted R-squared:  0.07247 
@@ -422,6 +522,32 @@ day_of_week5   14.496      6.085   2.382  0.01773 *
 day_of_week6   30.208      6.121   4.936 1.23e-06 ***
 day_of_week7    1.746      6.127   0.285  0.77589    
 \end{codeSmall}
+
+
+% lmd6
+% xtable(as.data.frame(summary(lmd6)$coefficients), digits=c(100, 2, 2, 2, 4), display=c("s", "f", "f", "f", "g"))
+\begin{table}[ht]
+\footnotesize
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & Estimate & Std. Error & t value & Pr($>|t|$) \\ 
+  \hline
+(Intercept) & -13.34 & 4.38 & -3.04 & 0.002517 \\ 
+  temp\_jump1 & 8.94 & 5.42 & 1.65 & 0.1001 \\ 
+  day\_of\_week2 & 16.48 & 6.11 & 2.70 & 0.007358 \\ 
+  day\_of\_week3 & 7.00 & 6.11 & 1.14 & 0.253 \\ 
+  day\_of\_week4 & 16.15 & 6.12 & 2.64 & 0.008634 \\ 
+  day\_of\_week5 & 14.50 & 6.08 & 2.38 & 0.01773 \\ 
+  day\_of\_week6 & 30.21 & 6.12 & 4.94 & $1.229 \times 10^{-6}$ \\ 
+  day\_of\_week7 & 1.75 & 6.13 & 0.28 & 0.7759 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+
+
 
 %Residual standard error: 31.17 on 357 degrees of freedom
 %Multiple R-squared:  0.0941,	Adjusted R-squared:  0.07634 
